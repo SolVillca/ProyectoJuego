@@ -145,16 +145,26 @@ public class PantallaNivel implements Screen{
 
 	}
 
+	public int contSalto = 0;
 	public void manejoEntrada(float dt) {
 		
 		// EL JUGADOR SE MOVERA SOLO SI ESTE SE ENCUENTRA VIVO
-	    if(!jugador.isMuerto()) {
-	    	
+	    if(!jugador.isMuerto() ) {
+	    	if(jugador.cuerpo.getLinearVelocity().y == 0) {
+				contSalto = 0;
+			}
 	    	// MOVIMIENTO VERTICAL (SALTO)
-	    	if (teclas.isArriba()) { //falta arreglaaaar
-		        //jugador.cuerpo.setLinearVelocity(jugador.cuerpo.getLinearVelocity().x, velocidadSalto);
-		        jugador.cuerpo.applyLinearImpulse(new Vector2(0, 20f), jugador.cuerpo.getWorldCenter(), true);// Solo afecta la velocidad vertical
-		    }
+	    	if (teclas.isArriba() && Gdx.input.isKeyJustPressed(Input.Keys.UP)) { //falta limitar cant salto
+	    		//System.out.println(Gdx.input.isKeyJustPressed(Input.Keys.UP));
+	    		if(contSalto >= 0 && contSalto < 2) {
+	    			jugador.cuerpo.setLinearVelocity(jugador.cuerpo.getLinearVelocity().x, 80f);
+	    			contSalto++;
+	    			//System.out.println(contSalto);
+	    			
+		        //jugador.cuerpo.applyLinearImpulse(new Vector2(0, 20f), jugador.cuerpo.getWorldCenter(), true);// Solo afecta la velocidad vertical
+	    		}
+	    		
+	    	}
 
 		    // MOVIMIENTO HORIZONTAL HACIA LA DERECHA
 		    if (teclas.isDerecha()) {
@@ -166,7 +176,9 @@ public class PantallaNivel implements Screen{
 		        jugador.cuerpo.setLinearVelocity(-60f, jugador.cuerpo.getLinearVelocity().y); // Velocidad negativa para moverse a la izquierda
 		    }
 		    
-
+		    if(jugador.cuerpo.getLinearVelocity().y < 0) {
+		    	jugador.cuerpo.applyLinearImpulse(new Vector2(0, -9.8f), jugador.cuerpo.getWorldCenter(), true);
+		    }
 		    // EL PERSONAJE SE DETIENE SI NO HAY TECLAS PRESIONADAS 
 		    if (!teclas.isDerecha() && !teclas.isIzquierda()) {
 		        jugador.cuerpo.setLinearVelocity(0, jugador.cuerpo.getLinearVelocity().y); // Se mantiene la velocidad vertical sin cambios

@@ -4,6 +4,8 @@ import com.abyss.explorer.pantallas.PantallaMenu;
 import com.abyss.explorer.pantallas.PantallaNivel;
 import com.abyss.explorer.utiles.Config;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
 public class KeyListener implements InputProcessor{
