@@ -1,5 +1,7 @@
 package com.abyss.explorer.pantallas;
 
+import java.awt.Cursor;
+
 import com.abyss.explorer.elementos.Imagen;
 import com.abyss.explorer.elementos.Texto;
 import com.abyss.explorer.io.KeyListener;
@@ -9,6 +11,7 @@ import com.abyss.explorer.utiles.Render;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PantallaMenu implements Screen{
@@ -16,7 +19,7 @@ public class PantallaMenu implements Screen{
 	Imagen fondo;
 	SpriteBatch b;
 	
-	KeyListener entrada = new KeyListener(this);
+	KeyListener entrada ;
 	
 	Texto titulo;
 	
@@ -29,6 +32,7 @@ public class PantallaMenu implements Screen{
 	
 	@Override
 	public void show() {
+		
 		fondo = new Imagen(Recursos.FONDOMENU);
 		fondo.setSize(Config.ANCHO, Config.ALTO);
 		
@@ -36,12 +40,13 @@ public class PantallaMenu implements Screen{
 		titulo.setTexto(Config.NOMBRE);
 		titulo.setPosition( (Config.ANCHO - titulo.getAncho() ) / 2f , 600); //(Config.ALTO- t.getAlto())/2)
 		
-		b = Render.sb;
 		
+		entrada = new KeyListener(this);
 		Gdx.input.setInputProcessor(entrada);
 		
+		b = Render.sb;
 		
-		// Opciones menu
+		// OPCIONES DEL MENU
 		int avance = 40;
 		for (int i = 0; i < opciones.length; i++) {
 			opciones[i] = new Texto(Recursos.FUENTEMENU, 40, Color.valueOf("#D2704A"), false);
@@ -65,6 +70,8 @@ public class PantallaMenu implements Screen{
 		
 		tiempo += delta;
 		
+		//DESPLAZAMIENTO POR EL MENU CON LAS TECLAS ARRIBA Y ABAJO
+		
 		if(entrada.isAbajo()) {
 			if(tiempo>0.2f) {
 				tiempo = 0;
@@ -85,23 +92,39 @@ public class PantallaMenu implements Screen{
 			}
 		}
 		
+		// DESPLAZAMIENTO POR EL MENU CON EL MOUSE
+		
 		for (int i = 0; i < opciones.length; i++) {
+			
+			//DEFINE SI EL MOUSE ESTA POSICIONADO SOBRE ALGUNA DE LAS OPCIONES DEL MENU
 			if((entrada.getMouseX() >= opciones[i].getX()) && (entrada.getMouseX() <= (opciones[i].getX() + opciones[i].getAncho()))) {
 				if((entrada.getMouseY() >= opciones[i].getY() - opciones[i].getAlto()) && (entrada.getMouseY()<= (opciones[i].getY()))) {
+					
+					//Gdx.graphics.setSystemCursor(SystemCursor.Hand);
 					opcion = i+1;
 					cont++;
 				} 
-			}	
+			} else {
+				//Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+			}
 		}
 		
-		if (cont>0) mouseArriba = true;
-		else mouseArriba = false;
+		if (cont>0) {
+			mouseArriba = true;
+		} else {
+			mouseArriba = false;
+		}
 		
+		// CAMBIA DE COLOR DEPENDIENDO SI ESTA SIENDO SELECCIONADO
 		for (int i = 0; i < opciones.length; i++) {
-			if(i == (opcion -1)) opciones[i].setColor(Color.YELLOW);
-			else opciones[i].setColor(Color.valueOf("#D2704A"));
+			if(i == (opcion -1)){
+				opciones[i].setColor(Color.YELLOW);
+			} else {
+				opciones[i].setColor(Color.valueOf("#D2704A"));
+			}
 		}
 		
+		// ACCION DEPENDIENDO DE LA OPCION OPRIMIDA
 		if((entrada.isEnter()) || (entrada.isClick())){
 			if(opcion==1) {
 				Render.app.setScreen(new PantallaNivel());
@@ -139,6 +162,8 @@ public class PantallaMenu implements Screen{
 	public void dispose() {
 		// TODO Auto-generated method stub
 		this.dispose();
+		titulo.dispose();
+		fondo.dispose();
 		
 	}
 

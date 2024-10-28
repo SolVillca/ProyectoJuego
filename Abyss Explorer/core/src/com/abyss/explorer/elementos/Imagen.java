@@ -11,9 +11,6 @@ public class Imagen {
     float imagenWidth;
     float imagenHeight;
     
-    float escalaWidth;
-    float escalaHeight;
-    
     
     float x;
     float y;
@@ -26,39 +23,14 @@ public class Imagen {
         imagenHeight = s.getHeight();
     }
 
-    public void dispose() {
-        t.dispose();
-    }
-    
     public void dibujar() {
         s.setPosition(x, y);
         s.draw(Render.sb);
     }
     
-    public void drawPosition(float x, float y) {
+    public void dibujarPosicion(float x, float y) {
         s.setPosition(x, y);
         s.draw(Render.sb);
-    }
-    
-    public void setTransparencia(float a) {
-    	s.setAlpha(a);
-    }
-    
-    public void setSize(float ancho, float alto) {
-    	s.setSize(ancho, alto);
-    }
-    
-    public void drawResize() {
-        s.setSize(escalaWidth, escalaHeight);
-        s.setPosition(x, y);
-        s.draw(Render.sb);
-    }
-    
-
-    
-    public void setPosition(float x, float y) {
-        this.x = x;
-        this.y = y;
     }
     
     public Sprite getSprite() {
@@ -80,4 +52,22 @@ public class Imagen {
     public float getHeight() {
         return s.getHeight();
     }
+    
+    public void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+    
+    public void setSize(float ancho, float alto) {
+    	s.setSize(ancho, alto);
+    }
+    
+    public void setTransparencia(float a) {
+    	s.setAlpha(a);
+    }
+
+    public void dispose() {
+        t.dispose();
+    }
+    
 }

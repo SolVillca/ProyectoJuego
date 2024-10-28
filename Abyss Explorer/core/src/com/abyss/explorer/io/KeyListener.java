@@ -8,7 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 
 public class KeyListener implements InputProcessor{
 	
-	private boolean abajo = false, arriba = false, enter = false, click = false;
+	private boolean  arriba = false, abajo = false, derecha = false, izquierda = false, enter = false, click = false;
 	
 	private int mouseX = 0, mouseY = 0;
 	
@@ -20,7 +20,7 @@ public class KeyListener implements InputProcessor{
 	}
 	
 	public KeyListener(PantallaNivel app) {
-		this.app_nivel = app_nivel;
+		this.app_nivel = app;
 	}
 
 	public boolean isAbajo() {
@@ -29,6 +29,14 @@ public class KeyListener implements InputProcessor{
 
 	public boolean isArriba() {
 	   return arriba;
+	}
+	
+	public boolean isDerecha() {
+		return derecha;
+	}
+	
+	public boolean isIzquierda() {
+		return izquierda;
 	}
 	
 	public boolean isEnter() {
@@ -57,6 +65,12 @@ public class KeyListener implements InputProcessor{
         if (keycode == Keys.UP) {
             arriba = true;
         }
+        if (keycode == Keys.RIGHT) {
+            derecha = true;
+        } 
+        if (keycode == Keys.LEFT) {
+            izquierda = true;
+        }
         if (keycode == Keys.ENTER) {
             enter = true;
         }
@@ -71,6 +85,12 @@ public class KeyListener implements InputProcessor{
         }
         if (keycode == Keys.UP) {
             arriba = false;
+        }
+        if (keycode == Keys.RIGHT) {
+            derecha = false;
+        }
+        if (keycode == Keys.LEFT) {
+            izquierda = false;
         }
         if (keycode == Keys.ENTER) {
             enter = false;
