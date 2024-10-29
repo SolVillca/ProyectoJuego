@@ -45,6 +45,8 @@ public class Marciano extends Sprite {
 	public boolean estaMuriendo = false;
 	private float tiempoMuerto = 0;
 	
+	private Checkpoint ultimoCheckpoint;
+	
 	
 	public Marciano (PantallaNivel pantalla) {
 	
@@ -207,13 +209,23 @@ public class Marciano extends Sprite {
 		}
 			
 
-		public void reaparicion() {
-			cuerpo.setTransform(new Vector2(40 / Config.PPM, 200 / Config.PPM), 0);
-			cuerpo.setLinearVelocity(0, 0);
-			estadoActual = EstadosMarciano.QUIETO;
-			muerto = false;
-			estaMuriendo = false;
-			
-		}
+		public void setUltimoCheckpoint(Checkpoint checkpoint) {
+	        ultimoCheckpoint = checkpoint;
+	    }
+
+	    public void reaparicion() {
+	        cuerpo.setLinearVelocity(0, 0);
+	        estadoActual = EstadosMarciano.QUIETO;
+	        muerto = false;
+	        estaMuriendo = false;
+
+	        // Si hay un checkpoint activado, reaparace en su posición; de lo contrario, usa la posición inicial
+	        if (ultimoCheckpoint != null && ultimoCheckpoint.isActivado()) {
+	            Vector2 posicion = ultimoCheckpoint.getPosicionReaparicion();
+	            cuerpo.setTransform(posicion, 0);
+	        } else {
+	            cuerpo.setTransform(new Vector2(40 / Config.PPM, 200 / Config.PPM), 0);
+	        }
+	    }
 
 }
