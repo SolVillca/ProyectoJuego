@@ -3,7 +3,6 @@ package com.abyss.explorer.pantallas;
 import com.abyss.explorer.elementos.MundoBox2D;
 import com.abyss.explorer.elementos.WorldContactListener;
 import com.abyss.explorer.io.KeyListener;
-import com.abyss.explorer.sprites.Checkpoint;
 import com.abyss.explorer.sprites.Marciano;
 import com.abyss.explorer.utiles.Config;
 import com.abyss.explorer.utiles.Recursos;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -94,7 +92,6 @@ public class PantallaNivel implements Screen{
 		
 		//CREACION DEL PERSONAJE EN EL JUEGO
 		jugador = new Marciano(this);
-
 		
 		mundo.setContactListener(new WorldContactListener());
 		
@@ -125,9 +122,10 @@ public class PantallaNivel implements Screen{
 		return mundoBox2D;
 	}
 	
-	public TextureAtlas getAtlas() {
+	public TextureAtlas getAtlasJugador() {
 		return atlas;
 	}
+	
 
 	@Override
 	public void render(float delta) {
@@ -196,7 +194,6 @@ public class PantallaNivel implements Screen{
 		// ACTUALIZAR EL MUNDO BOX2D
 		mundo.step(1/60f, 6, 2);
 		jugador.update(dt);
-		
 		//ACTUALIZAR LA POSICION DE LA CAMARA
 		float limiteX = (mapa.getProperties().get("width", Integer.class) * mapa.getProperties().get("tilewidth", Integer.class))/Config.PPM;
 		float limiteY = (mapa.getProperties().get("height", Integer.class) * mapa.getProperties().get("tileheight", Integer.class))/Config.PPM;

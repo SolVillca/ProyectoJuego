@@ -51,7 +51,7 @@ public class Marciano extends Sprite {
 	public Marciano (PantallaNivel pantalla) {
 	
 		
-		super(pantalla.getAtlas().findRegion(Recursos.SPRITE_MARCIANO_1));
+		super(pantalla.getAtlasJugador().findRegion(Recursos.SPRITE_MARCIANO_1));
 		this.mundo = pantalla.getMundo();
 		
 		//DEFINIR EL ESTADO DEL MARCIANO

@@ -1,6 +1,6 @@
 package com.abyss.explorer.utiles;
 
-public class Config {
+public abstract class Config {
 	
 	// Tamaño pantalla
 	public static final int ANCHO = 1280, ALTO = 720; //768
