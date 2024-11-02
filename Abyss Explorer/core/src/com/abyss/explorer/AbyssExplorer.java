@@ -23,6 +23,7 @@ public class AbyssExplorer extends Game {
 	public static final short PINCHES_BIT = 64;
 	public static final short ENEMIGO_BIT = 128;
 	public static final short DEFAULT_BIT = 256;
+	public static final short FIN_BIT = 512;
 	
 	SpriteBatch batch;
 	Texture img;
@@ -32,7 +33,7 @@ public class AbyssExplorer extends Game {
 		Render.app = this;
 		Render.sb = new SpriteBatch();
 		//this.setScreen(new PantallaCarga());
-		this.setScreen(new PantallaNivel());
+		this.setScreen(new PantallaMenu());
 	}
 
 	@Override

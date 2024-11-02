@@ -3,6 +3,7 @@ package com.abyss.explorer.elementos;
 import com.abyss.explorer.pantallas.PantallaNivel;
 import com.abyss.explorer.sprites.Agua;
 import com.abyss.explorer.sprites.Checkpoint;
+import com.abyss.explorer.sprites.Llave;
 import com.abyss.explorer.sprites.Pinches;
 import com.abyss.explorer.sprites.Suelo;
 import com.abyss.explorer.sprites.Trampolin;
@@ -101,6 +102,11 @@ public class MundoBox2D {
         // CAPA OBJETOS TRAMPOLIN
         for (MapObject objeto : mapa.getLayers().get("trampolin").getObjects().getByType(RectangleMapObject.class)) {
             new Trampolin(pantalla, objeto);
+        }
+        
+     // CAPA OBJETOS TRAMPOLIN
+        for (MapObject objeto : mapa.getLayers().get("llave").getObjects().getByType(RectangleMapObject.class)) {
+            new Llave(pantalla, objeto);
         }
          
 

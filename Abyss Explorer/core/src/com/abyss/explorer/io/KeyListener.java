@@ -1,5 +1,6 @@
 package com.abyss.explorer.io;
 
+import com.abyss.explorer.pantallas.PantallaJugador;
 import com.abyss.explorer.pantallas.PantallaMenu;
 import com.abyss.explorer.pantallas.PantallaNivel;
 import com.abyss.explorer.utiles.Config;
@@ -10,15 +11,22 @@ import com.badlogic.gdx.InputProcessor;
 
 public class KeyListener implements InputProcessor{
 	
-	private boolean  arriba = false, abajo = false, derecha = false, izquierda = false, enter = false, click = false;
+	private boolean  arriba = false, abajo = false, derecha = false, izquierda = false, teclaW = false, teclaA = false, teclaD = false, enter = false, click = false;
+
+	
 	
 	private int mouseX = 0, mouseY = 0;
 	
 	private PantallaMenu app;
 	private PantallaNivel app_nivel;
+	private PantallaJugador app_jugador;
 	
 	public KeyListener(PantallaMenu app) {
 		this.app = app;
+	}
+	
+	public KeyListener(PantallaJugador app) {
+		this.app_jugador = app;
 	}
 	
 	public KeyListener(PantallaNivel app) {
@@ -40,6 +48,18 @@ public class KeyListener implements InputProcessor{
 	public boolean isIzquierda() {
 		return izquierda;
 	}
+	
+	public boolean isTeclaW() {
+		   return teclaW;
+		}
+
+		public boolean isTeclaA() {
+		   return teclaA;
+		}
+		
+		public boolean isTeclaD() {
+			return teclaD;
+		}
 	
 	public boolean isEnter() {
 		return enter;
@@ -76,6 +96,15 @@ public class KeyListener implements InputProcessor{
         if (keycode == Keys.ENTER) {
             enter = true;
         }
+        if (keycode == Keys.W) {
+            teclaW = true;
+        } 
+        if (keycode == Keys.A) {
+        	teclaA = true;
+        }
+        if (keycode == Keys.D) {
+        	teclaD = true;
+        }
 		return false;
 	}
 
@@ -96,6 +125,15 @@ public class KeyListener implements InputProcessor{
         }
         if (keycode == Keys.ENTER) {
             enter = false;
+        }
+        if (keycode == Keys.W) {
+            teclaW = false;
+        } 
+        if (keycode == Keys.A) {
+        	teclaA = false;
+        }
+        if (keycode == Keys.D) {
+        	teclaD = false;
         }
 		return false;
 	}

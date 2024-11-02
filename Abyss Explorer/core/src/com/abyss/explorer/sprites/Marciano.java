@@ -48,34 +48,17 @@ public class Marciano extends Sprite {
 	private Checkpoint ultimoCheckpoint;
 	
 	
-	public Marciano (PantallaNivel pantalla) {
+	public Marciano (PantallaNivel pantalla, String region, int posAndando, int posQuieto) {
 	
 		
-		super(pantalla.getAtlasJugador().findRegion(Recursos.SPRITE_MARCIANO_1));
+		super(pantalla.getAtlasJugador().findRegion(region));
 		this.mundo = pantalla.getMundo();
 		
 		//DEFINIR EL ESTADO DEL MARCIANO
 		estadoActual = EstadosMarciano.QUIETO;
 		estadoAnterior = EstadosMarciano.QUIETO;
 		
-		Array<TextureRegion> frames = new Array <TextureRegion>();
-		
-		// ANIMACION ANDANDO
-		frames.add(new TextureRegion(getTexture(), 80, 2, 24, 24));
-		frames.add(new TextureRegion(getTexture(), 54, 2, 24, 24));
-        marcianoAndando = new Animation<>(0.25f, frames, Animation.PlayMode.LOOP);
-        
-        frames.clear();
-        
-        // MARCIANO SALTANDO
-        frames.add(new TextureRegion(getTexture(), 80, 2, 24, 24));
-        marcianoSaltando = new Animation<>(0.2f, frames, Animation.PlayMode.NORMAL);
-        frames.clear();
-        // MARCIANO QUIETO
-        marcianoQuieto = new TextureRegion(getTexture(), 54, 2, 24, 24);
-        
-        //Marciano muerto (faltaaaa) ¡!
-        marcianoMuerto = new TextureRegion(getTexture(), 80, 2, 24, 24);
+		setTexture(posAndando, posQuieto);
 
 		// CREACION DEL CUERPO DEL MARCIANO, CONFIGURACION Y COLISION
 		estructuraMarciano();
@@ -83,6 +66,27 @@ public class Marciano extends Sprite {
 		setRegion(marcianoQuieto);
 		setSize(26,26);
 		
+	}
+	
+	private void setTexture(int posQuieto, int posAndando ) {
+		Array<TextureRegion> frames = new Array <TextureRegion>();
+		
+		// ANIMACION ANDANDO
+		frames.add(new TextureRegion(getTexture(), posAndando, 2, 24, 24));
+		frames.add(new TextureRegion(getTexture(), posQuieto, 2, 24, 24));
+        marcianoAndando = new Animation<>(0.25f, frames, Animation.PlayMode.LOOP);
+        
+        frames.clear();
+        
+        // MARCIANO SALTANDO
+        frames.add(new TextureRegion(getTexture(), posAndando, 2, 24, 24));
+        marcianoSaltando = new Animation<>(0.2f, frames, Animation.PlayMode.NORMAL);
+        frames.clear();
+        // MARCIANO QUIETO
+        marcianoQuieto = new TextureRegion(getTexture(), posQuieto, 2, 24, 24);
+        
+        //Marciano muerto (faltaaaa) ¡!
+        marcianoMuerto = new TextureRegion(getTexture(), posAndando, 2, 24, 24);
 	}
 	
 	private void estructuraMarciano() {
@@ -99,7 +103,7 @@ public class Marciano extends Sprite {
 	    PolygonShape forma = new PolygonShape(); // FORMA DEL CUERPO
 	    forma.setAsBox(10 / Config.PPM, 13 / Config.PPM); // DIMENSIONES 10 y 13
 	    fd.filter.categoryBits = AbyssExplorer.MARCIANO_BIT; // CATEGORÍA DEL MARCIANO
-	    fd.filter.maskBits = AbyssExplorer.DEFAULT_BIT  | AbyssExplorer.TRAMPOLIN_BIT | AbyssExplorer.PINCHES_BIT | AbyssExplorer.ENEMIGO_BIT | AbyssExplorer.CHECKPOINT_BIT | AbyssExplorer.CHECKPOINT_ACTIVADO_BIT; // ELEMENTOS CON LOS QUE PUEDE COLISIONAR
+	    fd.filter.maskBits = AbyssExplorer.DEFAULT_BIT  | AbyssExplorer.TRAMPOLIN_BIT | AbyssExplorer.PINCHES_BIT | AbyssExplorer.ENEMIGO_BIT | AbyssExplorer.CHECKPOINT_BIT | AbyssExplorer.CHECKPOINT_ACTIVADO_BIT | AbyssExplorer.FIN_BIT; // ELEMENTOS CON LOS QUE PUEDE COLISIONAR
 	    
 	    fd.shape = forma;
 	    cuerpo.createFixture(fd).setUserData(this); // ASIGNAR EL FIXTURE AL CUERPO
@@ -112,14 +116,10 @@ public class Marciano extends Sprite {
 	    fd.shape = pies;
 	    fd.isSensor = true; // LOS PIES SON UN SENSOR PARA DETECTAR TRAMPOLINES, PINCHES, ETC
 	    fd.filter.categoryBits = Render.app.MARCIANO_PIES_BIT;
-	    fd.filter.maskBits = AbyssExplorer.DEFAULT_BIT | AbyssExplorer.AGUA_BIT | AbyssExplorer.TRAMPOLIN_BIT | AbyssExplorer.PINCHES_BIT | AbyssExplorer.ENEMIGO_BIT | AbyssExplorer.CHECKPOINT_BIT | AbyssExplorer.CHECKPOINT_ACTIVADO_BIT; // ELEMENTOS CON LOS QUE PUEDE COLISIONAR
+	    fd.filter.maskBits = AbyssExplorer.DEFAULT_BIT | AbyssExplorer.AGUA_BIT | AbyssExplorer.TRAMPOLIN_BIT | AbyssExplorer.PINCHES_BIT | AbyssExplorer.ENEMIGO_BIT | AbyssExplorer.CHECKPOINT_BIT | AbyssExplorer.CHECKPOINT_ACTIVADO_BIT  | AbyssExplorer.FIN_BIT; // ELEMENTOS CON LOS QUE PUEDE COLISIONAR
 	    
 	    
 	    cuerpo.createFixture(fd).setUserData(this);
-	 
-
-	    
-
 	}
 	
 	private TextureRegion getFrame(float dt) {
@@ -160,7 +160,6 @@ public class Marciano extends Sprite {
 	
 	private EstadosMarciano getEstado() {
 		//System.out.println("Estado actual: " + estadoActual);
-
 		if(muerto)
 			return EstadosMarciano.MUERTO;
 		
@@ -175,23 +174,24 @@ public class Marciano extends Sprite {
 		
 		else 
 			return EstadosMarciano.QUIETO;
-		
 	}
 	
 	public void update (float dt) {
 		
-				setPosition(cuerpo.getPosition().x - getWidth() / 2, cuerpo.getPosition().y - getHeight() / 2);
-				setRegion(getFrame(dt));
+		setPosition(cuerpo.getPosition().x - getWidth() / 2, cuerpo.getPosition().y - getHeight() / 2);
+		setRegion(getFrame(dt));
 				
 		 if(muerto) {
-	            tiempoMuerto += dt;
-	            if (tiempoMuerto >= 1.0f) { //TIEMPO DE ESPERA ANTES DE REAPARECER
-	                reaparicion();
-	                tiempoMuerto = 0;
-	            }
-	        } else {
-	            setPosition(cuerpo.getPosition().x - getWidth() / 2, cuerpo.getPosition().y - getHeight() / 2);
-	        }
+			 tiempoMuerto += dt;
+			 
+			 if (tiempoMuerto >= 1.0f) { //TIEMPO DE ESPERA ANTES DE REAPARECER
+				 reaparicion();
+	             tiempoMuerto = 0;
+	         }
+			 
+	     } else {
+	         setPosition(cuerpo.getPosition().x - getWidth() / 2, cuerpo.getPosition().y - getHeight() / 2);
+	     }
 		 
 		 setRegion(getFrame(dt));
 		
@@ -199,33 +199,32 @@ public class Marciano extends Sprite {
 	}
 	
 	//METODOS PARA LA SECUENCIA DE MUERTE DEL PERSONAJE
-		public boolean isMuerto(){ 
-			return muerto; 
-		}
+	public boolean isMuerto(){ 
+		return muerto; 
+	}
 
-		public void setEstaMuerto(boolean muerto) {
-			this.muerto = muerto;
-			if(muerto) cuerpo.setLinearVelocity(0, 0);
-		}
+	public void setEstaMuerto(boolean muerto) {
+		this.muerto = muerto;
+		if(muerto) cuerpo.setLinearVelocity(0, 0);
+	}
 			
 
-		public void setUltimoCheckpoint(Checkpoint checkpoint) {
-	        ultimoCheckpoint = checkpoint;
-	    }
+	public void setUltimoCheckpoint(Checkpoint checkpoint) {
+		ultimoCheckpoint = checkpoint;
+	}
 
-	    public void reaparicion() {
-	        cuerpo.setLinearVelocity(0, 0);
-	        estadoActual = EstadosMarciano.QUIETO;
-	        muerto = false;
-	        estaMuriendo = false;
+	public void reaparicion() {
+		cuerpo.setLinearVelocity(0, 0);
+		estadoActual = EstadosMarciano.QUIETO;
+		muerto = false;
+		estaMuriendo = false;
 
-	        // Si hay un checkpoint activado, reaparace en su posición; de lo contrario, usa la posición inicial
-	        if (ultimoCheckpoint != null && ultimoCheckpoint.isActivado()) {
-	            Vector2 posicion = ultimoCheckpoint.getPosicionReaparicion();
-	            cuerpo.setTransform(posicion, 0);
-	        } else {
-	            cuerpo.setTransform(new Vector2(40 / Config.PPM, 200 / Config.PPM), 0);
-	        }
-	    }
-
+		// Si hay un checkpoint activado, reaparace en su posición; si no, usa la posición inicial
+		if (ultimoCheckpoint != null && ultimoCheckpoint.isActivado()) {
+			Vector2 posicion = ultimoCheckpoint.getPosicionReaparicion();
+			cuerpo.setTransform(posicion, 0);
+		} else {
+			cuerpo.setTransform(new Vector2(40 / Config.PPM, 200 / Config.PPM), 0);
+		}
+	}
 }
