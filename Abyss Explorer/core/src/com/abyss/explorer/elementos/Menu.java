@@ -11,7 +11,6 @@ import com.abyss.explorer.io.KeyListener;
 import java.util.List;
 
 public class Menu {
-	int  cont = 0;
 	boolean mouseArriba = false;
 	
 
@@ -30,7 +29,7 @@ public class Menu {
         this.avance = avance;
         this.entrada = entrada;
         this.acciones = acciones;
-        this.opcion = 1; // Opción inicial
+        this.opcion = 1;
         this.tiempo = 0;
         
         for (int i = 0; i < opciones.length; i++) {
@@ -58,51 +57,33 @@ public class Menu {
     }
 
     private void manejarNavegacion() {
-    	//DESPLAZAMIENTO POR EL MENU CON LAS TECLAS ARRIBA Y ABAJO
-		
-    			if(entrada.isAbajo()) {
-    				if(tiempo>0.2f) {
-    					tiempo = 0;
-    					opcion++;
-    					if(opcion > opciones.length) {
-    						opcion = 1;
-    					}
-    				}
-    			}
-    			
-    			if(entrada.isArriba()) {
-    				if(tiempo>0.2f) {
-    					tiempo = 0;
-    					opcion--;
-    					if(opcion<1) {
-    						opcion = opciones.length;
-    					}
-    				}
-    			}
-    			
-    			// DESPLAZAMIENTO POR EL MENU CON EL MOUSE
-    			
-    			for (int i = 0; i < opciones.length; i++) {
-    				
-    				//DEFINE SI EL MOUSE ESTA POSICIONADO SOBRE ALGUNA DE LAS OPCIONES DEL MENU
-    				if((entrada.getMouseX() >= opciones[i].getX()) && (entrada.getMouseX() <= (opciones[i].getX() + opciones[i].getAncho()))) {
-    					if((entrada.getMouseY() >= opciones[i].getY() - opciones[i].getAlto()) && (entrada.getMouseY()<= (opciones[i].getY()))) {
-    						
-    						//Gdx.graphics.setSystemCursor(SystemCursor.Hand);
-    						opcion = i+1;
-    						cont++;
-    					} 
-    				} else {
-    					//Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
-    				}
-    			}
-    			
-    			if (cont>0) {
-    				mouseArriba = true;
-    			} else {
-    				mouseArriba = false;
-    			}
+        // DESPLAZAMIENTO POR EL MENU CON LAS FLECHAS
+        if (entrada.isAbajo() && tiempo > 0.2f) {
+            tiempo = 0;
+            opcion++;
+            if (opcion > opciones.length) {
+                opcion = 1;
+            }
+        }
+
+        if (entrada.isArriba() && tiempo > 0.2f) {
+            tiempo = 0;
+            opcion--;
+            if (opcion < 1) {
+                opcion = opciones.length;
+            }
+        }
+
+        // DESPLAZAMIENTO POR EL MENU CON EL MOUSE
+        for (int i = 0; i < opciones.length; i++) {
+            if (entrada.getMouseX() >= opciones[i].getX() && entrada.getMouseX() <= (opciones[i].getX() + opciones[i].getAncho())) {
+                if (entrada.getMouseY() >= opciones[i].getY() - opciones[i].getAlto() && entrada.getMouseY() <= opciones[i].getY()) {
+                    opcion = i + 1;
+                }
+            }
+        }
     }
+
     private void actualizarColores() {
     	// CAMBIA DE COLOR DEPENDIENDO SI ESTA SIENDO SELECCIONADO
     	for (int i = 0; i < opciones.length; i++) {
@@ -115,10 +96,10 @@ public class Menu {
     }
 
     private void manejarSeleccion() {
-        // Acción dependiendo de la opción oprimida
+        // ACCION DEPENDIENDO DE LA OPCION OPRIMIDA
         if (entrada.isEnter() || entrada.isClick()) {
             if (opcion >= 1 && opcion <= acciones.size()) {
-                acciones.get(opcion - 1).run(); // Ejecutar la acción correspondiente
+                acciones.get(opcion - 1).run(); // EJECUTA LA OPC CORRESPONDIENTE
             }
         }
     }
