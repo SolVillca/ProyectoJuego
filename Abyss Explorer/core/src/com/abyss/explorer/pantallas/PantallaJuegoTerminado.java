@@ -1,10 +1,16 @@
 package com.abyss.explorer.pantallas;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.abyss.explorer.elementos.Imagen;
+import com.abyss.explorer.elementos.Menu;
 import com.abyss.explorer.elementos.Texto;
+import com.abyss.explorer.io.KeyListener;
 import com.abyss.explorer.utiles.Config;
 import com.abyss.explorer.utiles.Recursos;
 import com.abyss.explorer.utiles.Render;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,12 +19,18 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PantallaJuegoTerminado implements Screen {
-    private SpriteBatch b;
+    SpriteBatch b;
     
-    private Texto estado;
+    Texto titulo;
     
+    Texto opciones[] ;
+    String textos [] = {"Volver al menu", "Salir"};
+    
+    Menu menu;
     private Viewport ventanaJuego;
     private OrthographicCamera camara;
+    
+    private KeyListener entradas;
     
     @Override
     public void show() {
@@ -28,13 +40,30 @@ public class PantallaJuegoTerminado implements Screen {
         // Ajustar la cámara
         camara.setToOrtho(false, ventanaJuego.getWorldWidth(), ventanaJuego.getWorldHeight());
         camara.update();
-
-    	
-    	
-        estado = new Texto(Recursos.FUENTEMENU, 40, Color.valueOf("#D2704A"), false);
-        estado.setTexto("Juego Terminado");
-        estado.setPosition((Config.ANCHO - estado.getAncho())/2, (Config.ALTO - estado.getAlto())/2);
         
+    	
+    	
+        titulo = new Texto(Recursos.FUENTEMENU, 40, Color.valueOf("#D2704A"), false);
+        titulo.setTexto("Juego Terminado");
+        titulo.setPosition((Config.ANCHO - titulo.getAncho())/2, 600);
+        
+        opciones = new Texto[textos.length];
+        
+        List<Runnable> acciones = new ArrayList<>();
+        acciones.add(() -> {
+            // Acción para elegir cant jugadores
+            Render.app.setScreen(new PantallaJugador());
+        });
+        acciones.add(() -> {
+            // Acción para la opción "Salir"
+            Gdx.app.exit();});
+        
+        
+        
+        entradas = new KeyListener(this);
+        Gdx.input.setInputProcessor(entradas);
+        
+        menu = new Menu(opciones, textos, 40, entradas, acciones);
         b = Render.sb;
     }
 
@@ -46,8 +75,11 @@ public class PantallaJuegoTerminado implements Screen {
         b.setProjectionMatrix(camara.combined);
         
         b.begin();
-        	estado.dibujar();
+        	titulo.dibujar();
+        	menu.dibujar(delta);
         b.end();
+        
+        
     }
 
     @Override
@@ -64,6 +96,6 @@ public class PantallaJuegoTerminado implements Screen {
 
     @Override
     public void dispose() {
-        estado.dispose();
+        titulo.dispose();
     }
 }

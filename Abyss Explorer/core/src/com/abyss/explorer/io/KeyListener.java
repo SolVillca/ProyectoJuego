@@ -1,5 +1,6 @@
 package com.abyss.explorer.io;
 
+import com.abyss.explorer.pantallas.PantallaJuegoTerminado;
 import com.abyss.explorer.pantallas.PantallaJugador;
 import com.abyss.explorer.pantallas.PantallaMenu;
 import com.abyss.explorer.pantallas.PantallaNivel;
@@ -20,6 +21,7 @@ public class KeyListener implements InputProcessor{
 	private PantallaMenu app;
 	private PantallaNivel app_nivel;
 	private PantallaJugador app_jugador;
+	private PantallaJuegoTerminado app_volver;
 	
 	public KeyListener(PantallaMenu app) {
 		this.app = app;
@@ -31,6 +33,10 @@ public class KeyListener implements InputProcessor{
 	
 	public KeyListener(PantallaNivel app) {
 		this.app_nivel = app;
+	}
+
+	public KeyListener(PantallaJuegoTerminado app) {
+		this.app_volver = app;
 	}
 
 	public boolean isAbajo() {
