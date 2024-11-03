@@ -1,16 +1,15 @@
-package com.abyss.explorer.pantallas;
+package com.abyss.explorerserver.pantallas;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.abyss.explorer.AbyssExplorer;
-import com.abyss.explorer.elementos.Imagen;
-import com.abyss.explorer.elementos.Menu;
-import com.abyss.explorer.elementos.Texto;
-import com.abyss.explorer.io.KeyListener;
-import com.abyss.explorer.utiles.Config;
-import com.abyss.explorer.utiles.Recursos;
-import com.abyss.explorer.utiles.Render;
+import com.abyss.explorerserver.elementos.Imagen;
+import com.abyss.explorerserver.elementos.Menu;
+import com.abyss.explorerserver.elementos.Texto;
+import com.abyss.explorerserver.io.KeyListener;
+import com.abyss.explorerserver.utiles.Config;
+import com.abyss.explorerserver.utiles.Recursos;
+import com.abyss.explorerserver.utiles.Render;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;

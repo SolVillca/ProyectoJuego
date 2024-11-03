@@ -1,13 +1,12 @@
-package com.abyss.explorer;
+package com.abyss.explorerserver;
 
-
-import com.abyss.explorer.pantallas.PantallaMenu;
-import com.abyss.explorer.utiles.Render;
+import com.abyss.explorerserver.pantallas.PantallaMenu;
+import com.abyss.explorerserver.utiles.Render;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class AbyssExplorer extends Game {
+public class AbyssExplorerServer extends Game {
 	
 	
 	//CATEGORIZACION DE OBJETOS PARA MASCARA DE COLISIONES DE BOX 2D

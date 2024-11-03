@@ -1,10 +1,10 @@
-package com.abyss.explorer.io;
+package com.abyss.explorerserver.io;
 
-import com.abyss.explorer.pantallas.PantallaJuegoTerminado;
-import com.abyss.explorer.pantallas.PantallaJugador;
-import com.abyss.explorer.pantallas.PantallaMenu;
-import com.abyss.explorer.pantallas.PantallaNivel;
-import com.abyss.explorer.utiles.Config;
+import com.abyss.explorerserver.pantallas.PantallaJuegoTerminado;
+import com.abyss.explorerserver.pantallas.PantallaJugador;
+import com.abyss.explorerserver.pantallas.PantallaMenu;
+import com.abyss.explorerserver.pantallas.PantallaNivel;
+import com.abyss.explorerserver.utiles.Config;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 
@@ -192,3 +192,4 @@ public class KeyListener implements InputProcessor{
 	}
 
 }
+

@@ -1,8 +1,8 @@
-package com.abyss.explorer.pantallas;
+package com.abyss.explorerserver.pantallas;
 
-import com.abyss.explorer.elementos.Imagen;
-import com.abyss.explorer.utiles.Recursos;
-import com.abyss.explorer.utiles.Render;
+import com.abyss.explorerserver.elementos.Imagen;
+import com.abyss.explorerserver.utiles.Recursos;
+import com.abyss.explorerserver.utiles.Render;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -100,3 +100,4 @@ public class PantallaCarga implements Screen {
 	}
 
 }
+
