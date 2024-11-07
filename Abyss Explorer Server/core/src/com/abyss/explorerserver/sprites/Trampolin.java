@@ -1,15 +1,16 @@
 package com.abyss.explorerserver.sprites;
 
-import com.abyss.explorerserver.pantallas.PantallaNivel;
 import com.abyss.explorerserver.utiles.Render;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class Trampolin extends ObjetoInteractivo{
 
-	public Trampolin(PantallaNivel pantalla, MapObject objeto) {
-		super(pantalla, objeto);
-		fixture.setUserData(this);
-		setFiltroDeCategoria(Render.app.TRAMPOLIN_BIT);
+	public Trampolin(World mundo, TiledMap mapa, MapObject objeto) {
+        super(mundo, mapa, objeto);
+        fixture.setUserData(this);
+        setFiltroDeCategoria(Render.app.TRAMPOLIN_BIT);
 		// TODO Auto-generated constructor stub
 	}
 

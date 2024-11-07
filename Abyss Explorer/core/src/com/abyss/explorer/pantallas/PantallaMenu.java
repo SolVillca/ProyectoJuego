@@ -45,7 +45,8 @@ public class PantallaMenu implements Screen{
 		List<Runnable> acciones = new ArrayList<>();
         acciones.add(() -> {
             // Acción para la opción "Jugar"
-            Render.app.setScreen(new PantallaJugador());
+            Render.app.setScreen(new PantallaNivel());
+//            Render.app.setScreen(new PantallaJugador());
             
         });
         acciones.add(() -> {

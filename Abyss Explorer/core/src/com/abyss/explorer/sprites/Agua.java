@@ -1,21 +1,22 @@
 package com.abyss.explorer.sprites;
 
-import com.abyss.explorer.pantallas.PantallaNivel;
 import com.abyss.explorer.utiles.Render;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class Agua extends ObjetoInteractivo {
-	public Agua (PantallaNivel pantalla, MapObject objeto) {
-		super(pantalla, objeto);
-		fixture.setUserData(this);
-		setFiltroDeCategoria(Render.app.AGUA_BIT);
+	public Agua (World mundo, TiledMap mapa, MapObject objeto) {
+        super(mundo, mapa, objeto);
+        fixture.setUserData(this);
+        setFiltroDeCategoria(Render.app.AGUA_BIT);
 	}
 
 	@Override
 	public void colisionPies(Marciano marciano) {
 		// TODO Auto-generated method stub
 		Gdx.app.log("Agua", "Colision");
-		marciano.setEstaMuerto(true);
+		//marciano.setEstaMuerto(true);
 	}
 }

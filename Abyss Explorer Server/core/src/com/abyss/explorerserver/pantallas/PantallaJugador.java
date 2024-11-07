@@ -41,11 +41,11 @@ public class PantallaJugador implements Screen{
 		
 		List<Runnable> acciones = new ArrayList<>();
         acciones.add(() -> {
-            Render.app.setScreen(new PantallaNivel(1)); // Cambia a la pantalla de nivel
+           // Render.app.setScreen(new PantallaNivel()); // Cambia a la pantalla de nivel
             
         });
         acciones.add(() -> {
-            Render.app.setScreen(new PantallaNivel(2)); // Cambia a la pantalla de nivel
+            Render.app.setScreen(new PantallaNivel()); // Cambia a la pantalla de nivel
         });
         menu = new Menu(opciones, textos, true, 200, entradas, acciones);
         
