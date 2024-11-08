@@ -6,6 +6,7 @@ import java.util.Map;
 import com.abyss.explorer.elementos.Texto;
 import com.abyss.explorer.io.KeyListener;
 import com.abyss.explorer.red.HiloCliente;
+import com.abyss.explorer.sprites.Marciano;
 import com.abyss.explorer.utiles.Config;
 import com.abyss.explorer.utiles.Global;
 import com.abyss.explorer.utiles.Recursos;
@@ -90,13 +91,20 @@ public class PantallaNivel implements Screen {
             // Mostrar pantalla de espera
             Render.LimpiarPantalla();
             Render.begin();
-            espera.dibujar();
+            	espera.dibujar();
             Render.end();
         } else {
             // Continuar con la lógica del juego
         	Render.LimpiarPantalla();
             update(delta);
-
+            
+            for (Sprite sprite : jugadores.values()) {
+                if (sprite instanceof Marciano) {
+                    ((Marciano) sprite).update(delta); 
+                    ((Marciano) sprite).getRegion();
+                }
+            }
+            
             // Renderizado del mapa
             renderMapa.render();
 
@@ -109,7 +117,11 @@ public class PantallaNivel implements Screen {
             enviarInputs();
 
             if (Global.finJuego) {
-                Render.app.setScreen(new PantallaJuegoTerminado());
+            	Sprite sprite = jugadores.get(clienteId);
+                if (sprite instanceof Marciano) {
+                	Render.app.setScreen(new PantallaJuegoTerminado( ((Marciano) sprite).getRegion()));
+                }
+                
             }
         }
     }
@@ -134,6 +146,7 @@ public class PantallaNivel implements Screen {
 
     private void actualizarCamara() {
         Sprite jugadorLocalSprite = jugadores.get(jugadorLocal);
+        //System.out.println(jugadorLocalSprite);
         if (jugadorLocalSprite != null) {
         	// ACTUALIZAR LA POSICION DE LA CAMARA (modificar)
             float limiteX = (mapa.getProperties().get("width", Integer.class) * mapa.getProperties().get("tilewidth", Integer.class)) / Config.PPM;
@@ -167,21 +180,34 @@ public class PantallaNivel implements Screen {
                 float x = Float.parseFloat(posicion[0]);
                 float y = Float.parseFloat(posicion[1]);
                 String estadoJugador = partes[3];
-
+                //System.out.println("actualizarEstadoJuego pc " + estadoJugador);
                 actualizarJugador(id, tipo, x, y, estadoJugador);
             }
         }
     }
 
-    public void actualizarJugador(int id, String tipo, float x, float y, String estado) {
+    /*public void actualizarJugador(int id, String tipo, float x, float y, String estado) {
         Sprite sprite = jugadores.get(id);
+        //System.out.println(jugadores);
         if (sprite == null || !tipo.equals(tiposJugadores.get(id))) {
             sprite = new Sprite(atlas.findRegion(tipo));
             jugadores.put(id, sprite);
             tiposJugadores.put(id, tipo);
         }
-        sprite.setPosition(x + (id*10), y); //QUITAR EL +(ID*10) SOLO ES UNA PRUEBA
+        //System.out.println(x + " " + y);
+        sprite.setPosition(x , y); //QUITAR EL +(ID*10) SOLO ES UNA PRUEBA
         //System.out.println("Marciano " + id + " pos: " + x + ", " + y + ", estado: " + estado); // Debugging
+    }*/
+    
+    public void actualizarJugador(int id, String tipo, float x, float y, String estado) {
+        Marciano marciano = (Marciano) jugadores.get(id);
+        if (marciano == null || !tipo.equals(tiposJugadores.get(id))) {
+            marciano = new Marciano(atlas, tipo); // Asegúrate de que el tipo sea correcto
+            jugadores.put(id, marciano);
+            tiposJugadores.put(id, tipo);
+        }
+        marciano.setPosition(x, y);
+        marciano.actualizarEstado(estado); // Actualiza el estado del marciano
     }
 
     @Override
@@ -223,4 +249,5 @@ public class PantallaNivel implements Screen {
 	public void setClienteId(int id) {
 	    this.clienteId = id;
 	}
+	
 }

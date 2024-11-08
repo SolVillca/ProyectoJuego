@@ -63,7 +63,7 @@ public class Marciano {
 	    
 	    
 	    cuerpo.createFixture(fd).setUserData(this);
-	    System.out.println(" Marciano server, estructuraCuerpo");
+	    //System.out.println(" Marciano server, estructuraCuerpo");
         forma.dispose();
         pies.dispose();
     }
@@ -92,6 +92,8 @@ public class Marciano {
             estadoActual = EstadosMarciano.QUIETO;
         }
         estadoAnterior = estadoActual;
+        //System.out.println(estadoAnterior + "   " + estadoActual);
+        
     }
 
     public Body getCuerpo() {
@@ -100,7 +102,7 @@ public class Marciano {
 
 	public void saltar() {
         if (estadoActual != EstadosMarciano.SALTANDO && estadoActual != EstadosMarciano.CAYENDO) {
-        	cuerpo.setLinearVelocity(cuerpo.getLinearVelocity().x, 80f);
+        	cuerpo.setLinearVelocity(cuerpo.getLinearVelocity().x, 90f);
         }
     }
 

@@ -8,10 +8,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public class Marciano extends Sprite {
+	private int clienteId;
+	
     private Animation<TextureRegion> marcianoAndando;
     private Animation<TextureRegion> marcianoSaltando;
     private TextureRegion marcianoQuieto;
     private TextureRegion marcianoMuerto;
+    
+    private String region;
     
     private EstadosMarciano estadoActual;
     private EstadosMarciano estadoAnterior;
@@ -20,15 +24,18 @@ public class Marciano extends Sprite {
 
     public Marciano(TextureAtlas atlas, String region) {
         super(atlas.findRegion(region));
+        this.region = region;
         setTexture(atlas, region);
         estadoActual = EstadosMarciano.QUIETO;
         estadoAnterior = EstadosMarciano.QUIETO;
         setBounds(54 / Config.PPM, 2 / Config.PPM, 24 / Config.PPM, 24 / Config.PPM);
         //setRegion(marcianoQuieto);
 		setSize(26,26);
+		//System.out.println("Marciano cliente");
 		
     }
-
+    
+    
     private void setTexture(TextureAtlas atlas, String region) {
         Array<TextureRegion> frames = new Array<>();
         
@@ -122,6 +129,10 @@ public class Marciano extends Sprite {
         }
         
         return region;
+    }
+    
+    public String getRegion() {
+    	return region;
     }
 
     public void actualizarEstado(String estado) {

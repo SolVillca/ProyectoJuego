@@ -8,12 +8,14 @@ import com.abyss.explorer.elementos.Menu;
 import com.abyss.explorer.elementos.Texto;
 import com.abyss.explorer.io.KeyListener;
 import com.abyss.explorer.utiles.Config;
+import com.abyss.explorer.utiles.Global;
 import com.abyss.explorer.utiles.Recursos;
 import com.abyss.explorer.utiles.Render;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -34,7 +36,14 @@ public class PantallaJuegoTerminado implements Screen {
     
     private KeyListener entradas;
     
-    @Override
+    private String marcianoRegion;
+    
+    public PantallaJuegoTerminado(String marciano) {
+		// TODO Auto-generated constructor stub
+    	this.marcianoRegion = marciano;
+	}
+
+	@Override
     public void show() {
     	camara = new OrthographicCamera();
         ventanaJuego = new FitViewport(Config.ANCHO / Config.PPM, Config.ALTO / Config.PPM, camara);
@@ -46,7 +55,13 @@ public class PantallaJuegoTerminado implements Screen {
     	
     	
         titulo = new Texto(Recursos.FUENTEMENU, 40, Color.valueOf("#D2704A"), false);
-        titulo.setTexto("Juego Terminado");
+        if(Global.ganador.equals(marcianoRegion)) {
+        	System.out.println(marcianoRegion);
+        	titulo.setTexto("Juego Terminado : Ganador ");
+        } else {
+        	
+        	titulo.setTexto("Juego Terminado : Perdedor");
+        }
         titulo.setPosition((Config.ANCHO - titulo.getAncho())/2, 600);
         
         opciones = new Texto[textos.length];
@@ -54,7 +69,7 @@ public class PantallaJuegoTerminado implements Screen {
         List<Runnable> acciones = new ArrayList<>();
         acciones.add(() -> {
             // Acción para elegir cant jugadores
-            Render.app.setScreen(new PantallaJugador());
+            Render.app.setScreen(new PantallaMenu());
         });
         acciones.add(() -> {
             // Acción para la opción "Salir"

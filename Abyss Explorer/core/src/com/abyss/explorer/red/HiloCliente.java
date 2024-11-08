@@ -57,6 +57,10 @@ public class HiloCliente extends Thread{
             DatagramPacket dp = new DatagramPacket(data, data.length);
             try {
                 conexion.receive(dp);
+                //System.out.println(dp);
+                if(dp == null) {
+                	System.out.println(dp);
+                }
                 procesarMsj(dp);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -92,6 +96,18 @@ public class HiloCliente extends Thread{
 	        
 	    } else if (msj.equals("Empieza")) {
 	        Global.inicioJuego = true;
+	    } else if(msj.equals("FinJuego")) {
+	    	Global.finJuego = true;
+	    	detener();
+	    	System.out.println("Juego Terminado");
+	    } else if(msj.startsWith("LlaveRecogida:")) {
+	    	String[] partes = msj.split(":");
+	    	System.out.println("Recogio llave: " + msj);
+	        if (partes.length > 1) {
+	            String marcianoGanador = partes[1];
+	            Global.ganador = marcianoGanador; // Método para establecer el clienteId en PantallaNivel
+	        }
+	    	System.out.println("Juego Terminado");
 	    }
 	}
 	

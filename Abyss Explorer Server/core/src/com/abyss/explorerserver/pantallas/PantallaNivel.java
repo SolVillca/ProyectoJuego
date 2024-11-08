@@ -6,6 +6,7 @@ import java.util.Map;
 import com.abyss.explorerserver.elementos.MundoBox2D;
 import com.abyss.explorerserver.elementos.WorldContactListener;
 import com.abyss.explorerserver.red.HiloServidor;
+import com.abyss.explorerserver.sprites.Llave;
 import com.abyss.explorerserver.sprites.Marciano;
 import com.abyss.explorerserver.utiles.Global;
 import com.abyss.explorerserver.utiles.Recursos;
@@ -16,11 +17,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class PantallaNivel implements Screen {
+	// MUNDO BOX2D
     private World mundo;
+    
+    // CREACION DEL MUNDO A PARTIR DE UNA CLASE
     private MundoBox2D mundoBox2D;
+
     private Map<Integer, Marciano> jugadores;
     private HiloServidor hs;
+    private int clienteId; 
+//    private static HiloServidor hs;
+    
+    private TmxMapLoader cargarMapa;
     private TiledMap mapa;
+ //   private OrthogonalTiledMapRenderer renderMapa;
 
     private String[] tiposMarciano = {
         Recursos.SPRITE_MARCIANO_PINK,
@@ -39,20 +49,25 @@ public class PantallaNivel implements Screen {
     }
 
     private void inicializarMundo() {
-        // Carga el mapa
-        TmxMapLoader cargarMapa = new TmxMapLoader();
+    	// CARGADO DEL MAPA Y CONFIG DE SU RENDERIZADO
+        cargarMapa = new TmxMapLoader();
         mapa = cargarMapa.load(Recursos.RUTA_MAPA);
-
-        // Inicializa el mundo de Box2D
+       // renderMapa = new OrthogonalTiledMapRenderer(mapa);
+        
+        // CONFIGURACION DE BOX2D
         mundo = new World(new Vector2(0, -100f), true);
+
+        // CREACION DE LAS FIGURAS BOX2D
         mundoBox2D = new MundoBox2D(this);
         mundo.setContactListener(new WorldContactListener());
+        
         System.out.println("Se inicializo el mundo");
     }
 
     public void crearJugador(int clienteId) {
         String tipoMarciano = tiposMarciano[contadorTipos % tiposMarciano.length];
         Marciano nuevoJugador = new Marciano(this, tipoMarciano, 40, 200, 24, 24);
+        this.clienteId = clienteId;
         jugadores.put(clienteId, nuevoJugador);
         contadorTipos++;
         enviarEstadoAClientes();
@@ -65,13 +80,15 @@ public class PantallaNivel implements Screen {
         mundo.step(1 / 60f, 6, 2);
         for (Marciano jugador : jugadores.values()) {
             jugador.update(delta);
-            System.out.println(jugador);
-            System.out.println(jugadores.values());
+            //System.out.println(jugador);
+            //System.out.println(jugadores.values());
         }
 
         if (Global.finJuego) {
+            hs.notificarGanador();
             hs.notificarFinJuego();
-            System.out.println("Juego terminado");
+            Global.inicioJuego = false;
+            //System.out.println("Juego terminado");
         }
 
         enviarEstadoAClientes();
@@ -111,12 +128,16 @@ public class PantallaNivel implements Screen {
             }
         }
     }
-
+    
+    
+    // ENVIA EL ESTADO DEL JUGADOR AL CLIENTE (POSICION Y ESTADO)
     private void enviarEstadoAClientes() {
         String estadoJuego = serializarEstadoJuego();
         hs.enviarEstadoAClientes(estadoJuego);
     }
-
+    
+    
+    // CONSTRUYE UN STRING DONDE SE SERIALIZA LAS ACTUALIZACIONES DEL JUGADOR SEPARANDO POR : LOS DATOS Y ; LOS JUGADORES
     private String serializarEstadoJuego() {
         StringBuilder sb = new StringBuilder(); // Crea un StringBuilder para construir la cadena
         for (Map.Entry<Integer, Marciano> entry : jugadores.entrySet()) { // Itera sobre cada jugador
@@ -128,7 +149,7 @@ public class PantallaNivel implements Screen {
               .append(jugador.getCuerpo().getPosition().y).append(":") // Añade la posición Y
               .append(jugador.getEstado()).append(";"); // Añade el estado del jugador
         }
-        //System.out.println("enviarEstadoAcliente " + sb.toString()); // Debugging
+        //System.out.println("enviarEstadoAcliente " + sb.toString()); 
         return sb.toString(); // Devuelve la cadena construida
     }
 
@@ -154,7 +175,7 @@ public class PantallaNivel implements Screen {
     public void dispose() {
         hs.detener();
         mundo.dispose();
-        mapa.dispose();
+        //mapa.dispose();
         for (Marciano jugador : jugadores.values()) {
             mundo.destroyBody(jugador.getCuerpo());
         }
@@ -191,4 +212,9 @@ public class PantallaNivel implements Screen {
     public void hide() {
         // Método para ocultar la pantalla
     }
+
+	/*public static HiloServidor getHs() {
+		return hs;
+	}*/
+
 }

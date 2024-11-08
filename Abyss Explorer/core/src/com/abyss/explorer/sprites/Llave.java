@@ -1,6 +1,5 @@
 package com.abyss.explorer.sprites;
 
-import com.abyss.explorer.utiles.Global;
 import com.abyss.explorer.utiles.Render;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
@@ -18,9 +17,11 @@ public class Llave extends ObjetoInteractivo{
 
 	@Override
 	public void colisionPies(Marciano marciano) {
-		Gdx.app.log("Colision", "Llave");
+		Gdx.app.log("Colision", "Llave c");
 		//objeto.setVisible(false);
-		Global.finJuego = true;
+    	
+		//Global.ganador = clienteId;
+		//Global.finJuego = true;
 		
 		
 	}

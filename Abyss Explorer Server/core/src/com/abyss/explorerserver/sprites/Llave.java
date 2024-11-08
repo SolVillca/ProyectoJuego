@@ -8,7 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class Llave extends ObjetoInteractivo{
-
+	
 	public Llave(World mundo, TiledMap mapa, MapObject objeto) {
         super(mundo, mapa, objeto);
         fixture.setUserData(this);
@@ -18,10 +18,12 @@ public class Llave extends ObjetoInteractivo{
 
 	@Override
 	public void colisionPies(Marciano marciano) {
-		Gdx.app.log("Colision", "Llave");
-		Global.finJuego = true;
-		
-		
+	    Gdx.app.log("Colision", "Llave");
+	    Global.finJuego = true;
+
+	    // Notificar a los clientes sobre la colisión
+//	    mensaje = "LlaveRecogida:" + marciano.getTipoMarciano(); // O usa el ID del jugador 
+	    Global.ganador = marciano.getTipoMarciano(); // O usa el ID del jugador 
 	}
 
 }
