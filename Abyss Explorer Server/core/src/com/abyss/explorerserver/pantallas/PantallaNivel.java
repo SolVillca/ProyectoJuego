@@ -89,6 +89,11 @@ public class PantallaNivel implements Screen {
             hs.notificarFinJuego();
             Global.inicioJuego = false;
             //System.out.println("Juego terminado");
+           // for (Marciano jugador : jugadores.values()) {
+             //   hs.removerCliente(clienteId);
+                //System.out.println(jugador);
+                //System.out.println(jugadores.values());
+            //}
         }
 
         enviarEstadoAClientes();

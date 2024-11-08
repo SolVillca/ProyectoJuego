@@ -102,7 +102,7 @@ public class Marciano {
 
 	public void saltar() {
         if (estadoActual != EstadosMarciano.SALTANDO && estadoActual != EstadosMarciano.CAYENDO) {
-        	cuerpo.setLinearVelocity(cuerpo.getLinearVelocity().x, 90f);
+        	cuerpo.setLinearVelocity(cuerpo.getLinearVelocity().x, 100f);
         }
     }
 

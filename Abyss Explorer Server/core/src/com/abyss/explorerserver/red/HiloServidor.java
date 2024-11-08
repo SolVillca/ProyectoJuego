@@ -15,14 +15,16 @@ public class HiloServidor extends Thread {
 	private DatagramSocket conexion;
 	private boolean fin = false;
 	
-	private DireccionRed[] clientes = new DireccionRed[2];
+	private int limiteClientes = 2;
+	
+	private DireccionRed[] clientes = new DireccionRed[limiteClientes];
 	private int cantClientes = 0;
 	private PantallaNivel app;
 	private ConcurrentLinkedQueue<String> colaComandos = new ConcurrentLinkedQueue<>();
 	private ConcurrentHashMap<Integer, String> comandosClientes = new ConcurrentHashMap<>();
 
 	// Variable para almacenar el último latido de cada cliente
-	private long[] lastHeartbeat = new long[2]; // Almacena el último latido de cada cliente
+	private long[] lastHeartbeat = new long[limiteClientes]; // Almacena el último latido de cada cliente
 	private static final int TIMEOUT = 10000; // Tiempo de espera para considerar que un cliente está desconectado
 
 	public HiloServidor(PantallaNivel pantallaNivel) {
@@ -81,7 +83,7 @@ public class HiloServidor extends Thread {
 			System.out.println("Verifica si el cliente esta conectado");
 			lastHeartbeat[nroCliente] = System.currentTimeMillis();
 
-		} else if (cantClientes < 2) {
+		} else if (cantClientes < limiteClientes) {
 			if (msj.equals("Conexion")) {
 				System.out.println("Llega msj Conexion cliente " + cantClientes);
 				manejarConexionCliente(dp);
@@ -123,7 +125,7 @@ public class HiloServidor extends Thread {
 
 	private void manejarConexionCliente(DatagramPacket dp) {
 		System.out.println("manejarConexionClientes " + cantClientes);
-		if (cantClientes < 2) {
+		if (cantClientes < limiteClientes) {
 			System.out.println(" cant " + cantClientes );
 			clientes[cantClientes] = new DireccionRed(dp.getAddress(), dp.getPort());
 			System.out.println("OK:" + cantClientes + " " + clientes[cantClientes].getIp() +" " + clientes[cantClientes].getPuerto());
@@ -131,7 +133,7 @@ public class HiloServidor extends Thread {
 			app.crearJugador(cantClientes);
 			cantClientes++;
 
-			if (cantClientes == 2) {
+			if (cantClientes == limiteClientes) {
 				//Global.inicioJuego = true;
 				//System.out.println(Global.inicioJuego + "  entro");
 				for (DireccionRed cliente : clientes) {
@@ -143,7 +145,7 @@ public class HiloServidor extends Thread {
 			}
 		} else if (cantClientes == 0) {
 			System.out.println("Esperando clientes");
-		} else if (cantClientes > 2) {
+		} else if (cantClientes > limiteClientes) {
 			System.out.println("Esperando servidor, clientes");
 		}
 	}
@@ -166,9 +168,9 @@ public class HiloServidor extends Thread {
 	public void notificarFinJuego() {
 		for (DireccionRed cliente : clientes) {
 			if (cliente != null) {
-				enviarMsj("LlaveRecogida:" + Global.ganador, cliente.getIp(), cliente.getPuerto());
 				enviarMsj("FinJuego", cliente.getIp(), cliente.getPuerto());
 				//System.out.println("envio msj finJuego");
+				
 			}
 		}
 	}

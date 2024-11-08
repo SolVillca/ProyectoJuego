@@ -48,6 +48,7 @@ public class PantallaNivel implements Screen {
     private Map<Integer, Sprite> jugadores;
     private Map<Integer, String> tiposJugadores;
     private int jugadorLocal; // ID del jugador local
+    
 
 
     @Override
@@ -101,7 +102,6 @@ public class PantallaNivel implements Screen {
             for (Sprite sprite : jugadores.values()) {
                 if (sprite instanceof Marciano) {
                     ((Marciano) sprite).update(delta); 
-                    ((Marciano) sprite).getRegion();
                 }
             }
             
@@ -117,11 +117,11 @@ public class PantallaNivel implements Screen {
             enviarInputs();
 
             if (Global.finJuego) {
+            	
             	Sprite sprite = jugadores.get(clienteId);
                 if (sprite instanceof Marciano) {
                 	Render.app.setScreen(new PantallaJuegoTerminado( ((Marciano) sprite).getRegion()));
                 }
-                
             }
         }
     }
@@ -145,7 +145,7 @@ public class PantallaNivel implements Screen {
     }
 
     private void actualizarCamara() {
-        Sprite jugadorLocalSprite = jugadores.get(jugadorLocal);
+        Sprite jugadorLocalSprite = jugadores.get(clienteId);
         //System.out.println(jugadorLocalSprite);
         if (jugadorLocalSprite != null) {
         	// ACTUALIZAR LA POSICION DE LA CAMARA (modificar)
@@ -186,18 +186,7 @@ public class PantallaNivel implements Screen {
         }
     }
 
-    /*public void actualizarJugador(int id, String tipo, float x, float y, String estado) {
-        Sprite sprite = jugadores.get(id);
-        //System.out.println(jugadores);
-        if (sprite == null || !tipo.equals(tiposJugadores.get(id))) {
-            sprite = new Sprite(atlas.findRegion(tipo));
-            jugadores.put(id, sprite);
-            tiposJugadores.put(id, tipo);
-        }
-        //System.out.println(x + " " + y);
-        sprite.setPosition(x , y); //QUITAR EL +(ID*10) SOLO ES UNA PRUEBA
-        //System.out.println("Marciano " + id + " pos: " + x + ", " + y + ", estado: " + estado); // Debugging
-    }*/
+    
     
     public void actualizarJugador(int id, String tipo, float x, float y, String estado) {
         Marciano marciano = (Marciano) jugadores.get(id);
@@ -233,7 +222,7 @@ public class PantallaNivel implements Screen {
         renderMapa.dispose();
         atlas.dispose();
         hc.detener();
-       // hc.interrupt(); // Detener el hilo del cliente
+        //hc.interrupt(); // Detener el hilo del cliente
     }
 
 	public World getMundo() {
