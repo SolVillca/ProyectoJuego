@@ -6,13 +6,13 @@ import java.util.Map;
 import com.abyss.explorerserver.elementos.MundoBox2D;
 import com.abyss.explorerserver.elementos.WorldContactListener;
 import com.abyss.explorerserver.red.HiloServidor;
-import com.abyss.explorerserver.sprites.Llave;
 import com.abyss.explorerserver.sprites.Marciano;
 import com.abyss.explorerserver.utiles.Global;
 import com.abyss.explorerserver.utiles.Recursos;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -28,10 +28,16 @@ public class PantallaNivel implements Screen {
     private int clienteId; 
 //    private static HiloServidor hs;
     
+    
+    // MAPA
     private TmxMapLoader cargarMapa;
     private TiledMap mapa;
- //   private OrthogonalTiledMapRenderer renderMapa;
+    private OrthogonalTiledMapRenderer renderMapa;
 
+    private int contSalto = 0;
+    
+    
+    //ARRAY QUE ALMACENA TODOS LOS TIPOS DE MARCIANOS DEL ATLAS MARCIANOS
     private String[] tiposMarciano = {
         Recursos.SPRITE_MARCIANO_PINK,
         Recursos.SPRITE_MARCIANO_GREEN,
@@ -49,10 +55,10 @@ public class PantallaNivel implements Screen {
     }
 
     private void inicializarMundo() {
-    	// CARGADO DEL MAPA Y CONFIG DE SU RENDERIZADO
+    	// CARGADO DEL MAPA 
         cargarMapa = new TmxMapLoader();
         mapa = cargarMapa.load(Recursos.RUTA_MAPA);
-       // renderMapa = new OrthogonalTiledMapRenderer(mapa);
+        renderMapa = new OrthogonalTiledMapRenderer(mapa);
         
         // CONFIGURACION DE BOX2D
         mundo = new World(new Vector2(0, -100f), true);
@@ -105,31 +111,43 @@ public class PantallaNivel implements Screen {
             Marciano jugador = entry.getValue();
             //System.out.println("holaaaa entre");
             // Recibe comandos como "ARRIBA", "DERECHA", "IZQUIERDA" del cliente
-            String comando = hs.obtenerComandoCliente(clienteId);
-            //System.out.println("manejo: " + comando + " id " + clienteId + " jugador" + jugador);
-            if (comando != null) {
-            	if(comando.equals("ARRIBA;")) {
-            		jugador.saltar();
-            	}
-            	
-            	if(comando.equals("DERECHA;")) {
-            		 jugador.moverDerecha();
-            	}
-            	if(comando.equals("IZQUIERDA;")) {
-            		jugador.moverIzquierda();
-            	}
-                /*switch (comando) {
-                    case "ARRIBA;":
-                        jugador.saltar();
-                        break;
-                    case "DERECHA;":
-                    	//System.out.println("se movio derecha");
-                        jugador.moverDerecha();
-                        break;
-                    case "IZQUIERDA;":
-                        jugador.moverIzquierda();
-                        break;
-                }*/
+            
+            if(!jugador.isMuerto()) {
+            	String comando = hs.obtenerComandoCliente(clienteId);
+                //System.out.println("manejo: " + comando + " id " + clienteId + " jugador" + jugador);
+                if (comando != null) {
+                	if(comando.equals("ARRIBA;") && contSalto < 2) {
+                		jugador.saltar();
+                		contSalto++;
+                		//System.out.println(contSalto);
+                		//jugador.cuerpo.setLinearVelocity(jugador.cuerpo.getLinearVelocity().x, 80f);
+                	}
+                	
+                	if(comando.equals("DERECHA;")) {
+                		 //jugador.moverDerecha();
+                		 jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y);
+                	}
+                	if(comando.equals("IZQUIERDA;")) {
+                		//jugador.moverIzquierda();
+                		jugador.cuerpo.setLinearVelocity(-60f, jugador.cuerpo.getLinearVelocity().y);
+                	}
+                	
+                	
+                	// Se aplica una fuerza cuando el marciano está cayendo
+                	if (jugador.cuerpo.getLinearVelocity().y < 0) {
+                        jugador.cuerpo.applyLinearImpulse(new Vector2(0, -9.8f), jugador.cuerpo.getWorldCenter(), true);
+                    }
+
+                    // EL PERSONAJE SE DETIENE SI NO HAY TECLAS PRESIONADAS
+                    if (comando.equals("QUIETO;"))  {
+                        jugador.cuerpo.setLinearVelocity(0, jugador.cuerpo.getLinearVelocity().y);
+                    }
+                    
+                    if(jugador.cuerpo.getLinearVelocity().y == 0) {
+                    	contSalto = 0;
+                    	//System.out.println(contSalto + " toco suelo");
+                    }
+                }
             }
         }
     }
@@ -154,10 +172,11 @@ public class PantallaNivel implements Screen {
               .append(jugador.getCuerpo().getPosition().y).append(":") // Añade la posición Y
               .append(jugador.getEstado()).append(";"); // Añade el estado del jugador
         }
-        //System.out.println("enviarEstadoAcliente " + sb.toString()); 
         return sb.toString(); // Devuelve la cadena construida
     }
-
+    
+    
+    // GETTERS
     public World getMundo() {
         return mundo;
     }

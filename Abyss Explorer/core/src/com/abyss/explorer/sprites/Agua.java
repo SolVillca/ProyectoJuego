@@ -1,4 +1,4 @@
-package com.abyss.explorer.sprites;
+/*package com.abyss.explorer.sprites;
 
 import com.abyss.explorer.utiles.Render;
 import com.badlogic.gdx.Gdx;
@@ -19,4 +19,4 @@ public class Agua extends ObjetoInteractivo {
 		Gdx.app.log("Agua", "Colision");
 		//marciano.setEstaMuerto(true);
 	}
-}
+}*/

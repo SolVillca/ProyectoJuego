@@ -1,4 +1,4 @@
-package com.abyss.explorer.sprites;
+/*package com.abyss.explorer.sprites;
 
 import com.abyss.explorer.utiles.Config;
 import com.abyss.explorer.utiles.Render;
@@ -43,3 +43,4 @@ public class Checkpoint extends ObjetoInteractivo {
     }
 }
 
+*/

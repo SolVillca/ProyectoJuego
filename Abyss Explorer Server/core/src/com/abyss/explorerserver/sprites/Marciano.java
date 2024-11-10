@@ -21,7 +21,7 @@ public class Marciano {
     private boolean muerto = false;
     private float tiempoMuerto = 0;
     private Checkpoint ultimoCheckpoint;
-    private int contSalto = 0;
+    
 
     public Marciano(PantallaNivel pantalla, String tipoMarciano, float x, float y, float ancho, float alto) {
         this.mundo = pantalla.getMundo();
@@ -59,7 +59,7 @@ public class Marciano {
 	    fd.shape = pies;
 	    fd.isSensor = true; // LOS PIES SON UN SENSOR PARA DETECTAR TRAMPOLINES, PINCHES, ETC
 	    fd.filter.categoryBits =  AbyssExplorerServer.MARCIANO_PIES_BIT;
-	    fd.filter.maskBits = AbyssExplorerServer.DEFAULT_BIT | AbyssExplorerServer.AGUA_BIT | AbyssExplorerServer.TRAMPOLIN_BIT | AbyssExplorerServer.PINCHES_BIT | AbyssExplorerServer.ENEMIGO_BIT | AbyssExplorerServer.CHECKPOINT_BIT | AbyssExplorerServer.CHECKPOINT_ACTIVADO_BIT  | AbyssExplorerServer.FIN_BIT; // ELEMENTOS CON LOS QUE PUEDE COLISIONAR
+	    fd.filter.maskBits = AbyssExplorerServer.DEFAULT_BIT | AbyssExplorerServer.AGUA_BIT | AbyssExplorerServer.TRAMPOLIN_BIT | AbyssExplorerServer.PINCHES_BIT | AbyssExplorerServer.ENEMIGO_BIT | AbyssExplorerServer.CHECKPOINT_BIT | AbyssExplorerServer.CHECKPOINT_ACTIVADO_BIT  | AbyssExplorerServer.FIN_BIT ; // ELEMENTOS CON LOS QUE PUEDE COLISIONAR
 	    
 	    
 	    cuerpo.createFixture(fd).setUserData(this);
@@ -101,9 +101,16 @@ public class Marciano {
 	}
 
 	public void saltar() {
-        if (estadoActual != EstadosMarciano.SALTANDO && estadoActual != EstadosMarciano.CAYENDO) {
-        	cuerpo.setLinearVelocity(cuerpo.getLinearVelocity().x, 100f);
-        }
+		
+		//if(contSalto < 2) {
+			cuerpo.setLinearVelocity(cuerpo.getLinearVelocity().x, 90f);
+			//contSalto++;
+		//}
+		
+
+        //if (estadoActual != EstadosMarciano.SALTANDO && estadoActual != EstadosMarciano.CAYENDO) {
+        //	contSalto = 0;
+        //}
     }
 
     public void moverDerecha() {

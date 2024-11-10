@@ -1,4 +1,4 @@
-package com.abyss.explorer.sprites;
+/*package com.abyss.explorer.sprites;
 
 import com.abyss.explorer.utiles.Config;
 import com.badlogic.gdx.maps.MapObject;
@@ -67,4 +67,4 @@ public abstract class ObjetoInteractivo {
             mundo.destroyBody(cuerpo);
         }
     }
-}
+}*/

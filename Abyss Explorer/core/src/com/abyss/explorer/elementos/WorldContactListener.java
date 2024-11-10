@@ -1,4 +1,4 @@
-package com.abyss.explorer.elementos;
+/*package com.abyss.explorer.elementos;
 
 
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -69,3 +69,4 @@ public class WorldContactListener implements ContactListener{
 	}
 
 }
+*/

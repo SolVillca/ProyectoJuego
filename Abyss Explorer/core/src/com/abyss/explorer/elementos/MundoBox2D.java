@@ -1,4 +1,4 @@
-package com.abyss.explorer.elementos;
+/*package com.abyss.explorer.elementos;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class MundoBox2D {
+public class MundoBox2D { 
     private World mundo;
     private TiledMap mapa;
     private Map<String, ObjetoInteractivo> objetosInteractivos;
@@ -67,4 +67,4 @@ public class MundoBox2D {
         }
         objetosInteractivos.clear();
     }
-}
+}*/

@@ -32,6 +32,7 @@ public class WorldContactListener implements ContactListener{
 		case AbyssExplorerServer.MARCIANO_PIES_BIT | AbyssExplorerServer.ENEMIGO_BIT:
 		case AbyssExplorerServer.MARCIANO_PIES_BIT | AbyssExplorerServer.FIN_BIT :
 			
+			
 			 if(fixtureA.getFilterData().categoryBits == AbyssExplorerServer.MARCIANO_PIES_BIT)
                  ((ObjetoInteractivo) fixtureB.getUserData()).colisionPies((Marciano) fixtureA.getUserData());
 			 		

@@ -15,17 +15,13 @@ public class HiloServidor extends Thread {
 	private DatagramSocket conexion;
 	private boolean fin = false;
 	
-	private int limiteClientes = 2;
+	private int limiteClientes = 1;
 	
 	private DireccionRed[] clientes = new DireccionRed[limiteClientes];
 	private int cantClientes = 0;
 	private PantallaNivel app;
-	private ConcurrentLinkedQueue<String> colaComandos = new ConcurrentLinkedQueue<>();
+	//private ConcurrentLinkedQueue<String> colaComandos = new ConcurrentLinkedQueue<>();
 	private ConcurrentHashMap<Integer, String> comandosClientes = new ConcurrentHashMap<>();
-
-	// Variable para almacenar el último latido de cada cliente
-	private long[] lastHeartbeat = new long[limiteClientes]; // Almacena el último latido de cada cliente
-	private static final int TIMEOUT = 10000; // Tiempo de espera para considerar que un cliente está desconectado
 
 	public HiloServidor(PantallaNivel pantallaNivel) {
 		this.app = pantallaNivel;
@@ -78,12 +74,7 @@ public class HiloServidor extends Thread {
 		//System.out.println("procesarMsj hs " + msj);
 		//System.out.println(nroCliente); // devuelve -1 si clientes[] es nulo o si el puerto del cliente no coincide con
 										// el datagrampacket
-		if (msj.equals("HEARTBEAT_ACK")) {
-			// Actualiza el tiempo del último latido para este cliente
-			System.out.println("Verifica si el cliente esta conectado");
-			lastHeartbeat[nroCliente] = System.currentTimeMillis();
-
-		} else if (cantClientes < limiteClientes) {
+		if (cantClientes < limiteClientes) {
 			if (msj.equals("Conexion")) {
 				System.out.println("Llega msj Conexion cliente " + cantClientes);
 				manejarConexionCliente(dp);
@@ -96,15 +87,27 @@ public class HiloServidor extends Thread {
 					// System.out.println("Manejo input");
 					// separar msj primero por ; cada uno es un jugador
 					// Extraer clienteId y movimiento
-					String[] partes = msj.split(":");
-					if (partes.length == 3) {
-						int clienteId = Integer.parseInt(partes[1]);
-						String movimiento = partes[2];
+				//	String[] partes = msj.split(":");
+				//	if (partes.length == 3) {
+					//	int clienteId = Integer.parseInt(partes[1]);
+					//	String movimiento = partes[2];
 						// Almacenar el movimiento en el mapa de comandos
-						comandosClientes.put(clienteId, movimiento);
+					//	comandosClientes.put(clienteId, movimiento);
 						// System.out.println("Movimiento recibido del cliente " + clienteId + ": " +
 						// movimiento);
-					}
+					//}
+					String[] jugadoresMovimiento = msj.split(";");
+			        for (String jugadorInfo : jugadoresMovimiento) {
+			        	String[] partes = msj.split(":");
+						if (partes.length == 3) {
+							int clienteId = Integer.parseInt(partes[1]);
+							String movimiento = partes[2];
+							// Almacenar el movimiento en el mapa de comandos
+							comandosClientes.put(clienteId, movimiento);
+							// System.out.println("Movimiento recibido del cliente " + clienteId + ": " +
+							// movimiento);
+						}
+			        }
 
 				}
 			}

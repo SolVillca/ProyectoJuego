@@ -1,4 +1,4 @@
-package com.abyss.explorer.sprites;
+/*package com.abyss.explorer.sprites;
 
 import com.abyss.explorer.utiles.Render;
 import com.badlogic.gdx.Gdx;
@@ -23,3 +23,4 @@ public class Pinches extends ObjetoInteractivo {
 
 
 }
+*/

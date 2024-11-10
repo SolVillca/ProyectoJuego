@@ -69,10 +69,7 @@ public class HiloCliente extends Thread{
 	private void procesarMsj(DatagramPacket dp) {
 	    String msj = new String(dp.getData()).trim();
 	    //System.out.println("Mensaje " + msj);
-	    if (msj.equals("HEARTBEAT")) {
-	        // Responder al latido
-	        enviarMsj("HEARTBEAT_ACK");
-	    } else if (msj.startsWith("Estado:")) {
+	    if (msj.startsWith("Estado:")) {
 	        String estadoJuego = msj.substring(7);
 	        //System.out.println("hc  " + estadoJuego);
 	        //System.out.println("hc  " + msj);

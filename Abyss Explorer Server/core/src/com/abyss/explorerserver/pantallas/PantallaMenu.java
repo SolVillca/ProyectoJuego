@@ -25,7 +25,7 @@ public class PantallaMenu implements Screen{
 	Texto titulo;
 	
 	Texto opciones[] ;
-	String textos[] = {"Inicio", "Salir"};
+	String textos[] = {"Iniciar servidor", "Salir"};
 	Menu menu;
 	
 

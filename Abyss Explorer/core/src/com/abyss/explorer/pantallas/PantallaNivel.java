@@ -12,6 +12,7 @@ import com.abyss.explorer.utiles.Global;
 import com.abyss.explorer.utiles.Recursos;
 import com.abyss.explorer.utiles.Render;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -117,7 +118,7 @@ public class PantallaNivel implements Screen {
             enviarInputs();
 
             if (Global.finJuego) {
-            	
+            	hc.detener();
             	Sprite sprite = jugadores.get(clienteId);
                 if (sprite instanceof Marciano) {
                 	Render.app.setScreen(new PantallaJuegoTerminado( ((Marciano) sprite).getRegion()));
@@ -149,19 +150,33 @@ public class PantallaNivel implements Screen {
         //System.out.println(jugadorLocalSprite);
         if (jugadorLocalSprite != null) {
         	// ACTUALIZAR LA POSICION DE LA CAMARA (modificar)
-            float limiteX = (mapa.getProperties().get("width", Integer.class) * mapa.getProperties().get("tilewidth", Integer.class)) / Config.PPM;
+        	float limiteX = (mapa.getProperties().get("width", Integer.class) * mapa.getProperties().get("tilewidth", Integer.class)) / Config.PPM;
             float limiteY = (mapa.getProperties().get("height", Integer.class) * mapa.getProperties().get("tileheight", Integer.class)) / Config.PPM;
             camara.position.x = Math.min(Math.max(jugadorLocalSprite.getX(), (ventanaJuego.getWorldWidth() / 4)), limiteX - (ventanaJuego.getWorldWidth() / 4));
-            camara.position.y = Math.min(Math.max(jugadorLocalSprite.getX(), (ventanaJuego.getWorldHeight() / 4)), limiteY - (ventanaJuego.getWorldHeight() / 4));
+            camara.position.y = Math.min(Math.max(jugadorLocalSprite.getY(), (ventanaJuego.getWorldHeight() / 4)), limiteY - (ventanaJuego.getWorldHeight() / 4));
+
 
         }
     }
 
     private void enviarInputs() {
         StringBuilder input = new StringBuilder();
-        if (teclas.isArriba()) input.append("ARRIBA;");
-        if (teclas.isDerecha()) input.append("DERECHA;");
-        if (teclas.isIzquierda()) input.append("IZQUIERDA;");
+        if (teclas.isArriba() && Gdx.input.isKeyJustPressed(Input.Keys.UP)) input.append("ARRIBA;");
+        if (teclas.isDerecha()) {
+        	Sprite sprite = jugadores.get(clienteId);
+            if (sprite instanceof Marciano) {
+            	((Marciano) sprite).setDireccion(false);
+            	input.append("DERECHA;");
+            }
+        }
+        if (teclas.isIzquierda()) {
+        	Sprite sprite = jugadores.get(clienteId);
+            if (sprite instanceof Marciano) {
+            	((Marciano) sprite).setDireccion(true);
+            	input.append("IZQUIERDA;");
+            }
+        }
+        if (!teclas.isDerecha() && !teclas.isIzquierda() && !teclas.isArriba()) input.append("QUIETO;");
         
         if (input.length() > 0) {
         	// error al mandar clienteId
