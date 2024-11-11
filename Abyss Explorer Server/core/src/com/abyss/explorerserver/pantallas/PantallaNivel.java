@@ -112,12 +112,10 @@ public class PantallaNivel implements Screen {
         for (Map.Entry<Integer, Marciano> entry : jugadores.entrySet()) {
             int clienteId = entry.getKey(); // Obtiene el ID del cliente
             Marciano jugador = entry.getValue(); // Obtiene el jugador correspondiente
-            // System.out.println("holaaaa entre"); // Mensaje de depuración
-            // Recibe comandos como "ARRIBA", "DERECHA", "IZQUIERDA" del cliente
-            
+
+            // Recibe comandos como "ARRIBA", "DERECHA", "IZQUIERDA" del cliente           
             if (!jugador.isMuerto()) { // Verifica si el jugador está vivo
                 String comando = hs.obtenerComandoCliente(clienteId); // Obtiene el comando del cliente
-                // System.out.println("manejo: " + comando + " id " + clienteId + " jugador" + jugador);
                 if (comando != null) {
                     if (comando.equals("ARRIBA;")) { // Maneja el salto
                         jugador.saltar(); // Hace saltar al jugador

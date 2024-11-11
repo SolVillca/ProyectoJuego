@@ -52,9 +52,9 @@ public class PantallaJuegoTerminado implements Screen {
         titulo = new Texto(Recursos.FUENTEMENU, 40, Color.valueOf("#D2704A"), false);
         if (Global.ganador.equals(marcianoRegion)) {
             System.out.println(marcianoRegion); // Mensaje de depuración
-            titulo.setTexto("Juego Terminado : Ganador"); // Establece el texto de ganador
+            titulo.setTexto("¡Ganaste!"); // Establece el texto de ganador
         } else {
-            titulo.setTexto("Juego Terminado : Perdedor"); // Establece el texto de perdedor
+            titulo.setTexto("¡Perdiste!"); // Establece el texto de perdedor
         }
         titulo.setPosition((Config.ANCHO - titulo.getAncho()) / 2, 600); // Centra el título en la pantalla
 

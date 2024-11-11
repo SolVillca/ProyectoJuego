@@ -43,35 +43,35 @@ public class HiloServidor extends Thread {
 
 	@Override
 	public void run() {
-		do {
-			byte[] data = new byte[1024];
-			DatagramPacket dp = new DatagramPacket(data, data.length);
-			try {
-				conexion.receive(dp);
-				procesarMsj(dp);
-			} catch (IOException e) {
-				e.printStackTrace();
+        do {
+            byte[] data = new byte[1024]; // Buffer para recibir datos
+            DatagramPacket dp = new DatagramPacket(data, data.length); // Paquete para recibir datos
+            try {
+                // Espera a recibir un paquete
+                conexion.receive(dp);
+                // Procesa el mensaje recibido
+                procesarMsj(dp);
+            } catch (SocketException e) {
+                // El socket se cerró, salimos del bucle
+                if (fin) {
+                    break; // Salimos si el cierre fue intencional
+                }
+                e.printStackTrace(); // Manejo de excepciones al recibir datos
+            } catch (IOException e) {
+                e.printStackTrace(); // Manejo de excepciones al recibir datos
+            }
+        } while (!fin); // Continúa hasta que fin sea verdadero
 
-			}
-		} while (!fin);
-	}
+        // Cierra el socket al finalizar el hilo
+        if (conexion != null && !conexion.isClosed()) {
+            conexion.close(); // Cierra el socket si está abierto
+        }
+    }
 
-	/*
-	 * private void procesarMsj(DatagramPacket dp) { String msj = new
-	 * String(dp.getData()).trim(); int nroCliente = obtenerNroCliente(dp);
-	 * 
-	 * if (cantClientes < 2) { if (msj.equals("Conexion")) {
-	 * System.out.println("Llega msj Conexion cliente " + cantClientes );
-	 * manejarConexionCliente(dp); } } else { if (nroCliente != -1) {
-	 * comandosClientes.put(nroCliente, msj); } } }
-	 */
 
 	private void procesarMsj(DatagramPacket dp) {
 		String msj = new String(dp.getData()).trim();
 		int nroCliente = obtenerNroCliente(dp);
-		//System.out.println("procesarMsj hs " + msj);
-		//System.out.println(nroCliente); // devuelve -1 si clientes[] es nulo o si el puerto del cliente no coincide con
-										// el datagrampacket
 		if (cantClientes < limiteClientes) {
 			if (msj.equals("Conexion")) {
 				System.out.println("Llega msj Conexion cliente " + cantClientes);
@@ -79,31 +79,18 @@ public class HiloServidor extends Thread {
 			}
 		} else {
 			if (nroCliente != -1) {
-				comandosClientes.put(nroCliente, msj);
+				//comandosClientes.put(nroCliente, msj);
 				if (msj.startsWith("INPUT:")) {
 					// comandosClientes.put(nroCliente, msj);
-					// System.out.println("Manejo input");
-					// separar msj primero por ; cada uno es un jugador
-					// Extraer clienteId y movimiento
-				//	String[] partes = msj.split(":");
-				//	if (partes.length == 3) {
-					//	int clienteId = Integer.parseInt(partes[1]);
-					//	String movimiento = partes[2];
-						// Almacenar el movimiento en el mapa de comandos
-					//	comandosClientes.put(clienteId, movimiento);
-						// System.out.println("Movimiento recibido del cliente " + clienteId + ": " +
-						// movimiento);
-					//}
 					String[] jugadoresMovimiento = msj.split(";");
+					System.out.println(jugadoresMovimiento);
 			        for (String jugadorInfo : jugadoresMovimiento) {
 			        	String[] partes = msj.split(":");
 						if (partes.length == 3) {
 							int clienteId = Integer.parseInt(partes[1]);
 							String movimiento = partes[2];
 							// Almacenar el movimiento en el mapa de comandos
-							comandosClientes.put(clienteId, movimiento);
-							// System.out.println("Movimiento recibido del cliente " + clienteId + ": " +
-							// movimiento);
+							comandosClientes.put(nroCliente, movimiento);
 						}
 			        }
 
@@ -114,10 +101,7 @@ public class HiloServidor extends Thread {
 
 	private int obtenerNroCliente(DatagramPacket dp) {
 		for (int i = 0; i < clientes.length; i++) {
-			// System.out.println("obtenerNroCLiente hs: " + clientes[i]+ " " +
-			// dp.getPort());
-			if (clientes[i] != null && dp.getPort() == clientes[i].getPuerto()
-					&& dp.getAddress().equals(clientes[i].getIp())) {
+			if (clientes[i] != null && dp.getPort() == clientes[i].getPuerto()&& dp.getAddress().equals(clientes[i].getIp())) {
 				return i;
 			}
 		}
@@ -144,10 +128,6 @@ public class HiloServidor extends Thread {
 					}
 				}
 			}
-		} else if (cantClientes == 0) {
-			System.out.println("Esperando clientes");
-		} else if (cantClientes > limiteClientes) {
-			System.out.println("Esperando servidor, clientes");
 		}
 	}
 
@@ -199,8 +179,8 @@ public class HiloServidor extends Thread {
 
 	public void detener() {
 		fin = true;
-		if (conexion != null && !conexion.isClosed()) {
-			conexion.close();
-		}
+		//if (conexion != null && !conexion.isClosed()) {
+			//conexion.close();
+		//}
 	}
 }

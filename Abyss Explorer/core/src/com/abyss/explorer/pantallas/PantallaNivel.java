@@ -96,7 +96,7 @@ public class PantallaNivel implements Screen {
             	espera.dibujar();
             Render.end();
         } else {
-            // Continuar con la lógica del juego
+            // Continua con la lógica del juego
         	Render.LimpiarPantalla();
             update(delta);
             
@@ -161,30 +161,28 @@ public class PantallaNivel implements Screen {
 
     private void enviarInputs() {
         StringBuilder input = new StringBuilder();
-        if (teclas.isArriba() && Gdx.input.isKeyJustPressed(Input.Keys.UP)) input.append("ARRIBA;");
-        if (teclas.isDerecha()) {
-        	Sprite sprite = jugadores.get(clienteId);
-            if (sprite instanceof Marciano) {
-            	((Marciano) sprite).setDireccion(false);
-            	input.append("DERECHA;");
-            }
-        }
-        if (teclas.isIzquierda()) {
-        	Sprite sprite = jugadores.get(clienteId);
-            if (sprite instanceof Marciano) {
-            	((Marciano) sprite).setDireccion(true);
-            	input.append("IZQUIERDA;");
-            }
-        }
-        if (!teclas.isDerecha() && !teclas.isIzquierda() && !teclas.isArriba()) input.append("QUIETO;");
-        
-        if (input.length() > 0) {
-        	// error al mandar clienteId
-            hc.enviarMsj("INPUT:" + clienteId + ":" + input.toString());
+        Sprite sprite = jugadores.get(clienteId);
+        if (sprite instanceof Marciano) {
+        	
+	        if (teclas.isArriba() && Gdx.input.isKeyJustPressed(Input.Keys.UP)) input.append("ARRIBA");
+	        if (teclas.isDerecha()) {
+	            ((Marciano) sprite).setDireccion(false);
+	            input.append("DERECHA");
+	        }
+	        if (teclas.isIzquierda()) {
+	            ((Marciano) sprite).setDireccion(true);
+	            input.append("IZQUIERDA");
+	        }
+	        
+	        if (!teclas.isDerecha() && !teclas.isIzquierda() && !teclas.isArriba()) input.append("QUIETO");
+	        
+	        if (input.length() > 0) {
+	            hc.enviarMsj("INPUT:" + clienteId + ":" + input.toString()+ ";" );
+	        }
         }
     }
 
-    public void actualizarEstadoJuego(String estado) {
+    /*public void actualizarEstadoJuego(String estado) {
         String[] jugadoresInfo = estado.split(";");
         for (String jugadorInfo : jugadoresInfo) {
             String[] partes = jugadorInfo.split(":");
@@ -199,7 +197,7 @@ public class PantallaNivel implements Screen {
                 actualizarJugador(id, tipo, x, y, estadoJugador);
             }
         }
-    }
+    }*/
 
     
     
@@ -237,18 +235,17 @@ public class PantallaNivel implements Screen {
         renderMapa.dispose();
         atlas.dispose();
         hc.detener();
-        //hc.interrupt(); // Detener el hilo del cliente
     }
 
-	public World getMundo() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	public World getMundo() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
-	public TiledMap getMapa() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	public TiledMap getMapa() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 	
 	public void setClienteId(int id) {
 	    this.clienteId = id;

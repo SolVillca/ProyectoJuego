@@ -61,7 +61,7 @@ public class HiloCliente extends Thread {
     // Método que se ejecuta al iniciar el hilo
     @Override
     public void run() {
-        do { // El ciclo debe finalizar cuando el juego termine
+        do {
             byte[] data = new byte[1024]; // Buffer para recibir datos
             DatagramPacket dp = new DatagramPacket(data, data.length); // Paquete para recibir datos
             try {
@@ -69,31 +69,45 @@ public class HiloCliente extends Thread {
                 conexion.receive(dp);
                 // Procesa el mensaje recibido
                 procesarMsj(dp);
+            } catch (SocketException e) {
+                // El socket se cerró, salimos del bucle
+                if (fin) {
+                    break; // Salimos si el cierre fue intencional
+                }
+                e.printStackTrace(); // Manejo de excepciones al recibir datos
             } catch (IOException e) {
                 e.printStackTrace(); // Manejo de excepciones al recibir datos
             }
         } while (!fin); // Continúa hasta que fin sea verdadero
+
+        // Cierra el socket al finalizar el hilo
+        if (conexion != null && !conexion.isClosed()) {
+            conexion.close(); // Cierra el socket si está abierto
+        }
     }
 
     // Método para procesar el mensaje recibido de un servidor
     private void procesarMsj(DatagramPacket dp) {
         String msj = new String(dp.getData()).trim(); // Convierte el paquete a string
         // Procesa diferentes tipos de mensajes
-        if (msj.startsWith("Estado:")) {
-            String estadoJuego = msj.substring(7); // Extrae el estado del juego
-            app.actualizarEstadoJuego(estadoJuego); // Actualiza el jugador en el hilo principal
-            colaActualizaciones.offer(estadoJuego); // Añade el estado a la cola de actualizaciones
-        } else if (msj.startsWith("OK")) {
+        if (msj.startsWith("OK")) {
             String[] partes = msj.split(":"); // Divide el mensaje en partes
             if (partes.length > 1) {
                 int clienteId = Integer.parseInt(partes[1]); // Extrae el ID del cliente
                 app.setClienteId(clienteId); // Establece el clienteId en PantallaNivel
             }
-            System.out.println("Conectado al servidor");
+            
         } else if (msj.equals("Empieza")) {
-            Global.inicioJuego = true; // Cambia el estado del juego a iniciado
+        	Global.inicioJuego = true; // Cambia el estado del juego a iniciado
+        	
+        } else if (msj.startsWith("Estado:")) {
+            String estadoJuego = msj.substring(7); // Extrae el estado del juego
+            //app.actualizarEstadoJuego(estadoJuego); // Actualiza el jugador en el hilo principal
+            colaActualizaciones.offer(estadoJuego); // Añade el estado a la cola de actualizaciones
+            
         } else if (msj.equals("FinJuego")) {
             Global.finJuego = true; // Cambia el estado del juego a finalizado
+            
         } else if (msj.startsWith("LlaveRecogida:")) {
             String[] partes = msj.split(":"); // Divide el mensaje en partes
             if (partes.length > 1) {
@@ -136,8 +150,5 @@ public class HiloCliente extends Thread {
     // Método para detener el hilo y cerrar el socket
     public void detener() {
         fin = true; // Cambia la bandera para finalizar el hilo
-        if (conexion != null && !conexion.isClosed()) {
-            conexion.close(); // Cierra el socket si está abierto
-        }
     }
 }

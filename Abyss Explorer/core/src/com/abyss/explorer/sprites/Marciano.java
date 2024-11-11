@@ -144,6 +144,11 @@ public class Marciano extends Sprite {
             estadoActual = EstadosMarciano.QUIETO; // Si falla, establece el estado a QUIETO
         }
     }
+    
+    // Método para obtener la direccion actual del marciano
+    public boolean getDireccion() {
+    	return porDer;
+    }
 
     // Método para establecer la dirección del marciano
     public void setDireccion(boolean haciaDerecha) {
@@ -153,15 +158,16 @@ public class Marciano extends Sprite {
         }
     }
 
+    // Método para obtener el estado actual del marciano
+    public EstadosMarciano getEstadoActual() {
+    	return estadoActual; // Retorna el estado actual
+    }
+    
     // Método para establecer el estado actual del marciano
     public void setEstadoActual(EstadosMarciano estado) {
         this.estadoActual = estado; // Establece el estado actual
     }
 
-    // Método para obtener el estado actual del marciano
-    public EstadosMarciano getEstadoActual() {
-        return estadoActual; // Retorna el estado actual
-    }
 
  // Método para reiniciar el tiempo en el estado actual
     public void resetTiempoEstado() {
