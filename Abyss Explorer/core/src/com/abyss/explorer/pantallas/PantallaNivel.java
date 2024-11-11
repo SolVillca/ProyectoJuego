@@ -137,17 +137,13 @@ public class PantallaNivel implements Screen {
 
     private void renderizarJugadores() {
     	
-    	//System.out.println(jugadores.values() + " rendrizar Jugadores cliente"); jugadores esta vacio
         for (Sprite sprite : jugadores.values()) {
             sprite.draw(b);
-           //System.out.println(jugadores.values());
         }
-       // System.out.println("Se renderizo jugadores");
     }
 
     private void actualizarCamara() {
         Sprite jugadorLocalSprite = jugadores.get(clienteId);
-        //System.out.println(jugadorLocalSprite);
         if (jugadorLocalSprite != null) {
         	// ACTUALIZAR LA POSICION DE LA CAMARA (modificar)
         	float limiteX = (mapa.getProperties().get("width", Integer.class) * mapa.getProperties().get("tilewidth", Integer.class)) / Config.PPM;
@@ -166,11 +162,11 @@ public class PantallaNivel implements Screen {
         	
 	        if (teclas.isArriba() && Gdx.input.isKeyJustPressed(Input.Keys.UP)) input.append("ARRIBA");
 	        if (teclas.isDerecha()) {
-	            ((Marciano) sprite).setDireccion(false);
+	            //((Marciano) sprite).setDireccion(false);
 	            input.append("DERECHA");
 	        }
 	        if (teclas.isIzquierda()) {
-	            ((Marciano) sprite).setDireccion(true);
+	            //((Marciano) sprite).setDireccion(true);
 	            input.append("IZQUIERDA");
 	        }
 	        
@@ -201,7 +197,7 @@ public class PantallaNivel implements Screen {
 
     
     
-    public void actualizarJugador(int id, String tipo, float x, float y, String estado) {
+    public void actualizarJugador(int id, String tipo, float x, float y, boolean haciaDer, String estado) {
         Marciano marciano = (Marciano) jugadores.get(id);
         if (marciano == null || !tipo.equals(tiposJugadores.get(id))) {
             marciano = new Marciano(atlas, tipo); // Asegúrate de que el tipo sea correcto
@@ -209,6 +205,7 @@ public class PantallaNivel implements Screen {
             tiposJugadores.put(id, tipo);
         }
         marciano.setPosition(x, y);
+        marciano.setDireccion(haciaDer);
         marciano.actualizarEstado(estado); // Actualiza el estado del marciano
     }
 

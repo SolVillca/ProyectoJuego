@@ -125,17 +125,18 @@ public class HiloCliente extends Thread {
             String[] jugadores = actualizacion.split(";"); // Divide el mensaje en partes por cada jugador
             for (String jugadorInfo : jugadores) {
                 String[] datos = jugadorInfo.split(":"); // Divide la información del jugador en partes
-                if (datos.length == 4) {
+                if (datos.length == 5) {
                     int id = Integer.parseInt(datos[0]); // ID del jugador
                     String tipo = datos[1]; // Tipo de jugador
                     String[] posicion = datos[2].split(","); // Posición del jugador
                     float x = Float.parseFloat(posicion[0]); // Coordenada X
                     float y = Float.parseFloat(posicion[1]); // Coordenada Y
-                    String estado = datos[3]; // Estado del jugador
-
+                    boolean haciaDer = Boolean.parseBoolean(datos[3]); // Coordenada Y
+                    String estado = datos[4]; // Estado del jugador
+                    //System.out.println(haciaDer + "  hc"); se mantiene en true
                     // Actualiza el jugador en el hilo principal
                     Gdx.app.postRunnable(() -> {
-                        app.actualizarJugador(id, tipo, x, y, estado);
+                        app.actualizarJugador(id, tipo, x, y, haciaDer, estado);
                     });
                 }
             }

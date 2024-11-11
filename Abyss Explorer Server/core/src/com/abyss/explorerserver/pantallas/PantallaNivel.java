@@ -122,10 +122,12 @@ public class PantallaNivel implements Screen {
                     }
 
                     if (comando.equals("DERECHA;")) { // Maneja el movimiento a la derecha
-                        jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
+                        //jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
+                    	jugador.moverDerecha();
                     }
                     if (comando.equals("IZQUIERDA;")) { // Maneja el movimiento a la izquierda
-                        jugador.cuerpo.setLinearVelocity(-60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
+                        //jugador.cuerpo.setLinearVelocity(-60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
+                    	jugador.moverIzquierda();
                     }
 
                     // Se aplica una fuerza cuando el marciano está cayendo
@@ -159,6 +161,7 @@ public class PantallaNivel implements Screen {
               .append(jugador.getTipoMarciano()).append(":") // Añade el tipo de marciano
               .append(jugador.getCuerpo().getPosition().x). append(",") // Añade la posición X
               .append(jugador.getCuerpo().getPosition().y).append(":") // Añade la posición Y
+              .append(jugador.getDireccion()).append(":") // Añade la direccion del jugador
               .append(jugador.getEstado()).append(";"); // Añade el estado del jugador
         }
         return sb.toString(); // Devuelve la cadena construida

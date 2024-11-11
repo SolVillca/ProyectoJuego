@@ -18,7 +18,7 @@ public class Marciano {
     private String tipoMarciano; // Tipo de marciano
     public EstadosMarciano estadoActual; // Estado actual del marciano
     public EstadosMarciano estadoAnterior; // Estado anterior del marciano
-    private boolean porDer = true; // Indica si el marciano mira a la derecha
+    private boolean porDer; // Indica si el marciano mira a la derecha
     private boolean muerto = false; // Indica si el marciano está muerto
     private float tiempoMuerto = 0; // Tiempo que el marciano ha estado muerto
     private Checkpoint ultimoCheckpoint; // Último checkpoint alcanzado por el marciano
@@ -124,13 +124,17 @@ public class Marciano {
     // Método para mover el marciano a la derecha
     public void moverDerecha() {
         cuerpo.setLinearVelocity(60f, cuerpo.getLinearVelocity().y); // Establece la velocidad horizontal hacia la derecha
-        porDer = true; // Indica que el marciano está mirando a la derecha
+        porDer = false; // Indica que el marciano está mirando a la derecha
     }
 
     // Método para mover el marciano a la izquierda
     public void moverIzquierda() {
         cuerpo.setLinearVelocity(-60f, cuerpo.getLinearVelocity().y); // Establece la velocidad horizontal hacia la izquierda
-        porDer = false; // Indica que el marciano está mirando a la izquierda
+        porDer = true; // Indica que el marciano está mirando a la izquierda
+    }
+    
+    public boolean getDireccion() {
+    	return porDer;
     }
 
     // Método para verificar si el marciano está muerto
