@@ -1,5 +1,8 @@
 package com.abyss.explorerserver.sprites;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.abyss.explorerserver.utiles.Config;
 import com.abyss.explorerserver.utiles.Render;
 import com.badlogic.gdx.Gdx;
@@ -10,10 +13,12 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Checkpoint extends ObjetoInteractivo {
     private boolean activado = false;
+    private Set<Integer> jugadoresActivados; // Conjunto para rastrear qué jugadores han activado este checkpoint
     private Vector2 posicionReaparicion; // ALMACENA LA POSICION DEL CHECKPOINT
 
     public Checkpoint(World mundo, TiledMap mapa, MapObject objeto) {
         super(mundo, mapa, objeto);
+        jugadoresActivados = new HashSet<>(); // Inicializa el conjunto
         fixture.setUserData(this);
         setFiltroDeCategoria(Render.app.CHECKPOINT_BIT);
 
@@ -25,21 +30,22 @@ public class Checkpoint extends ObjetoInteractivo {
 
     @Override
     public void colisionPies(Marciano marciano) {
-    	// EL CHECKPOINT SE ACTIVARA CON LA COLISION Y SE MARCARÁ COMO PUNTO DE REAPARICION
-        if (!activado) {
+        // Activa el checkpoint solo si no ha sido activado por este jugador
+        if (!jugadoresActivados.contains(marciano.getId())) {
             activado = true;
+            jugadoresActivados.add(marciano.getId()); // Agrega el ID del jugador al conjunto
             setFiltroDeCategoria(Render.app.CHECKPOINT_ACTIVADO_BIT);
-            marciano.setUltimoCheckpoint(this); // ASIGNA ESTE CHECKPOIN AL MARCIANO
-            Gdx.app.log("Checkpoint", "activado en posición: " + posicionReaparicion);
+            marciano.setUltimoCheckpoint(this); // Asigna este checkpoint al jugador
+            Gdx.app.log("Checkpoint", "activado en la posición: " + posicionReaparicion);
         }
     }
 
-    public boolean isActivado() {
-        return activado;
+    public boolean isActivadoPorJugador(int jugadorId) {
+        return jugadoresActivados.contains(jugadorId); // Verifica si el checkpoint fue activado por el jugador
     }
 
     public Vector2 getPosicionReaparicion() {
-        return posicionReaparicion;
+        return posicionReaparicion; // Retorna la posición de reaparición
     }
 }
 

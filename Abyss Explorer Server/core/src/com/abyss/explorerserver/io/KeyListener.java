@@ -1,42 +1,24 @@
 package com.abyss.explorerserver.io;
 
-import com.abyss.explorerserver.pantallas.PantallaJuegoTerminado;
-import com.abyss.explorerserver.pantallas.PantallaJugador;
 import com.abyss.explorerserver.pantallas.PantallaMenu;
-import com.abyss.explorerserver.pantallas.PantallaNivel;
 import com.abyss.explorerserver.utiles.Config;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 
 public class KeyListener implements InputProcessor{
 	
-	private boolean  arriba = false, abajo = false, derecha = false, izquierda = false, teclaW = false, teclaA = false, teclaD = false, enter = false, click = false;
+	private boolean  arriba = false, abajo = false, derecha = false, izquierda = false, enter = false, click = false;
 
 	
 	
 	private int mouseX = 0, mouseY = 0;
 	
 	private PantallaMenu app;
-	private PantallaNivel app_nivel;
-	private PantallaJugador app_jugador;
-	private PantallaJuegoTerminado app_volver;
 	
 	public KeyListener(PantallaMenu app) {
 		this.app = app;
 	}
 	
-	public KeyListener(PantallaJugador app) {
-		this.app_jugador = app;
-	}
-	
-	public KeyListener(PantallaNivel app) {
-		this.app_nivel = app;
-	}
-
-	public KeyListener(PantallaJuegoTerminado app) {
-		this.app_volver = app;
-	}
-
 
 	public boolean isAbajo() {
 	   return abajo;
@@ -53,18 +35,6 @@ public class KeyListener implements InputProcessor{
 	public boolean isIzquierda() {
 		return izquierda;
 	}
-	
-	public boolean isTeclaW() {
-		   return teclaW;
-		}
-
-		public boolean isTeclaA() {
-		   return teclaA;
-		}
-		
-		public boolean isTeclaD() {
-			return teclaD;
-		}
 	
 	public boolean isEnter() {
 		return enter;
@@ -101,15 +71,6 @@ public class KeyListener implements InputProcessor{
         if (keycode == Keys.ENTER) {
             enter = true;
         }
-        if (keycode == Keys.W) {
-            teclaW = true;
-        } 
-        if (keycode == Keys.A) {
-        	teclaA = true;
-        }
-        if (keycode == Keys.D) {
-        	teclaD = true;
-        }
 		return false;
 	}
 
@@ -130,15 +91,6 @@ public class KeyListener implements InputProcessor{
         }
         if (keycode == Keys.ENTER) {
             enter = false;
-        }
-        if (keycode == Keys.W) {
-            teclaW = false;
-        } 
-        if (keycode == Keys.A) {
-        	teclaA = false;
-        }
-        if (keycode == Keys.D) {
-        	teclaD = false;
         }
 		return false;
 	}

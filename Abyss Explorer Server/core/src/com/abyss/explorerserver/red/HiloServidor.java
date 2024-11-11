@@ -6,7 +6,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.abyss.explorerserver.pantallas.PantallaNivel;
 import com.abyss.explorerserver.utiles.Global;
@@ -15,12 +14,11 @@ public class HiloServidor extends Thread {
 	private DatagramSocket conexion;
 	private boolean fin = false;
 	
-	private int limiteClientes = 1;
+	private int limiteClientes = 2;
 	
 	private DireccionRed[] clientes = new DireccionRed[limiteClientes];
 	private int cantClientes = 0;
 	private PantallaNivel app;
-	//private ConcurrentLinkedQueue<String> colaComandos = new ConcurrentLinkedQueue<>();
 	private ConcurrentHashMap<Integer, String> comandosClientes = new ConcurrentHashMap<>();
 
 	public HiloServidor(PantallaNivel pantallaNivel) {

@@ -15,26 +15,26 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.SerializationException;
 
+//Clase que representa la pantalla del nivel del juego
 public class PantallaNivel implements Screen {
 	// MUNDO BOX2D
-    private World mundo;
+    private World mundo; // Mundo de Box2D
     
     // CREACION DEL MUNDO A PARTIR DE UNA CLASE
-    private MundoBox2D mundoBox2D;
+    private MundoBox2D mundoBox2D; // Clase que maneja el mundo Box2D
 
-    private Map<Integer, Marciano> jugadores;
-    private HiloServidor hs;
-    private int clienteId; 
-//    private static HiloServidor hs;
+    private Map<Integer, Marciano> jugadores; // Mapa que almacena los jugadores
+    private HiloServidor hs; // Hilo del servidor
+    private int clienteId; // ID del cliente
     
     
     // MAPA
-    private TmxMapLoader cargarMapa;
-    private TiledMap mapa;
-    private OrthogonalTiledMapRenderer renderMapa;
+    private TmxMapLoader cargarMapa; // Cargador de mapas
+    private TiledMap mapa; // Mapa del juego
+    private OrthogonalTiledMapRenderer renderMapa; // Renderizador del mapa
 
-    private int contSalto = 0;
     
     
     //ARRAY QUE ALMACENA TODOS LOS TIPOS DE MARCIANOS DEL ATLAS MARCIANOS
@@ -45,107 +45,99 @@ public class PantallaNivel implements Screen {
         Recursos.SPRITE_MARCIANO_ORANGE,
         Recursos.SPRITE_MARCIANO_NUDE
     };
-    private int contadorTipos = 0;
-
+    
+    private int contadorTipos = 0; // Contador de tipos de marcianos
+    
+    // Constructor de la clase PantallaNivel
     public PantallaNivel() {
-        inicializarMundo();
-        jugadores = new HashMap<>();
-        hs = new HiloServidor(this);
-        hs.start();
+        inicializarMundo(); // Inicializa el mundo
+        jugadores = new HashMap<>(); // Inicializa el mapa de jugadores
+        hs = new HiloServidor(this); // Crea un nuevo hilo del servidor
+        hs.start(); // Inicia el hilo del servidor
     }
 
+    // Método para inicializar el mundo
     private void inicializarMundo() {
-    	// CARGADO DEL MAPA 
-        cargarMapa = new TmxMapLoader();
-        mapa = cargarMapa.load(Recursos.RUTA_MAPA);
-        renderMapa = new OrthogonalTiledMapRenderer(mapa);
-        
+        // CARGADO DEL MAPA 
+        try {
+            cargarMapa = new TmxMapLoader(); // Crea un cargador de mapas
+            mapa = cargarMapa.load(Recursos.RUTA_MAPA); // Carga el mapa desde la ruta especificada
+            renderMapa = new OrthogonalTiledMapRenderer(mapa); // Crea un renderizador para el mapa
+        } catch (SerializationException e) {
+            e.printStackTrace(); // Maneja excepciones de serialización
+        }
+
         // CONFIGURACION DE BOX2D
-        mundo = new World(new Vector2(0, -100f), true);
+        mundo = new World(new Vector2(0, -100f), true); // Crea un nuevo mundo Box2D con gravedad
 
         // CREACION DE LAS FIGURAS BOX2D
-        mundoBox2D = new MundoBox2D(this);
-        mundo.setContactListener(new WorldContactListener());
-        
-        System.out.println("Se inicializo el mundo");
+        mundoBox2D = new MundoBox2D(this); // Inicializa el mundo Box2D
+        mundo.setContactListener(new WorldContactListener()); // Establece el listener de contactos
+
+        System.out.println("Se inicializo el mundo"); // Mensaje de depuración
     }
 
+ // Método para crear un nuevo jugador
     public void crearJugador(int clienteId) {
-        String tipoMarciano = tiposMarciano[contadorTipos % tiposMarciano.length];
-        Marciano nuevoJugador = new Marciano(this, tipoMarciano, 40, 200, 24, 24);
-        this.clienteId = clienteId;
-        jugadores.put(clienteId, nuevoJugador);
-        contadorTipos++;
-        enviarEstadoAClientes();
-        //System.out.println("Se creo jugador");
+        String tipoMarciano = tiposMarciano[contadorTipos % tiposMarciano.length]; // Selecciona el tipo de marciano
+        Marciano nuevoJugador = new Marciano(this, tipoMarciano, 40, 200, 24, 24, clienteId); // Crea un nuevo marciano
+        this.clienteId = clienteId; // Asigna el ID del cliente
+        jugadores.put(clienteId, nuevoJugador); // Agrega el jugador al mapa
+        contadorTipos++; // Incrementa el contador de tipos
+        enviarEstadoAClientes(); // Envía el estado a los clientes
+        // System.out.println("Se creo jugador"); // Mensaje de depuración
     }
 
+ // Método para actualizar el estado del nivel
     public void update(float delta) {
-    	//System.out.println("hola update " + delta);
-        manejoEntrada();
-        mundo.step(1 / 60f, 6, 2);
+        manejoEntrada(); // Maneja la entrada del jugador
+        mundo.step(1 / 60f, 6, 2); // Actualiza el mundo Box2D
         for (Marciano jugador : jugadores.values()) {
-            jugador.update(delta);
-            //System.out.println(jugador);
-            //System.out.println(jugadores.values());
+            jugador.update(delta); // Actualiza cada jugador
+            jugador.manejarCaida(); // Maneja la caída para reiniciar el contador de saltos
         }
 
         if (Global.finJuego) {
-            hs.notificarGanador();
-            hs.notificarFinJuego();
-            Global.inicioJuego = false;
-            //System.out.println("Juego terminado");
-           // for (Marciano jugador : jugadores.values()) {
-             //   hs.removerCliente(clienteId);
-                //System.out.println(jugador);
-                //System.out.println(jugadores.values());
-            //}
+            hs.notificarGanador(); // Notifica al servidor el ganador
+            hs.notificarFinJuego(); // Notifica el fin del juego
+            Global.inicioJuego = false; // Reinicia el estado de inicio del juego
+            // System.out.println("Juego terminado"); // Mensaje de depuración
         }
 
-        enviarEstadoAClientes();
+        enviarEstadoAClientes(); // Envía el estado actualizado a los clientes
     }
 
+    // Método para manejar la entrada del jugador
     private void manejoEntrada() {
         for (Map.Entry<Integer, Marciano> entry : jugadores.entrySet()) {
-            int clienteId = entry.getKey();
-            Marciano jugador = entry.getValue();
-            //System.out.println("holaaaa entre");
+            int clienteId = entry.getKey(); // Obtiene el ID del cliente
+            Marciano jugador = entry.getValue(); // Obtiene el jugador correspondiente
+            // System.out.println("holaaaa entre"); // Mensaje de depuración
             // Recibe comandos como "ARRIBA", "DERECHA", "IZQUIERDA" del cliente
             
-            if(!jugador.isMuerto()) {
-            	String comando = hs.obtenerComandoCliente(clienteId);
-                //System.out.println("manejo: " + comando + " id " + clienteId + " jugador" + jugador);
+            if (!jugador.isMuerto()) { // Verifica si el jugador está vivo
+                String comando = hs.obtenerComandoCliente(clienteId); // Obtiene el comando del cliente
+                // System.out.println("manejo: " + comando + " id " + clienteId + " jugador" + jugador);
                 if (comando != null) {
-                	if(comando.equals("ARRIBA;") && contSalto < 2) {
-                		jugador.saltar();
-                		contSalto++;
-                		//System.out.println(contSalto);
-                		//jugador.cuerpo.setLinearVelocity(jugador.cuerpo.getLinearVelocity().x, 80f);
-                	}
-                	
-                	if(comando.equals("DERECHA;")) {
-                		 //jugador.moverDerecha();
-                		 jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y);
-                	}
-                	if(comando.equals("IZQUIERDA;")) {
-                		//jugador.moverIzquierda();
-                		jugador.cuerpo.setLinearVelocity(-60f, jugador.cuerpo.getLinearVelocity().y);
-                	}
-                	
-                	
-                	// Se aplica una fuerza cuando el marciano está cayendo
-                	if (jugador.cuerpo.getLinearVelocity().y < 0) {
-                        jugador.cuerpo.applyLinearImpulse(new Vector2(0, -9.8f), jugador.cuerpo.getWorldCenter(), true);
+                    if (comando.equals("ARRIBA;")) { // Maneja el salto
+                        jugador.saltar(); // Hace saltar al jugador
+                    }
+
+                    if (comando.equals("DERECHA;")) { // Maneja el movimiento a la derecha
+                        jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
+                    }
+                    if (comando.equals("IZQUIERDA;")) { // Maneja el movimiento a la izquierda
+                        jugador.cuerpo.setLinearVelocity(-60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
+                    }
+
+                    // Se aplica una fuerza cuando el marciano está cayendo
+                    if (jugador.cuerpo.getLinearVelocity().y < 0) {
+                        jugador.cuerpo.applyLinearImpulse(new Vector2(0, -9.8f), jugador.cuerpo.getWorldCenter(), true); // Aplica impulso
                     }
 
                     // EL PERSONAJE SE DETIENE SI NO HAY TECLAS PRESIONADAS
-                    if (comando.equals("QUIETO;"))  {
-                        jugador.cuerpo.setLinearVelocity(0, jugador.cuerpo.getLinearVelocity().y);
-                    }
-                    
-                    if(jugador.cuerpo.getLinearVelocity().y == 0) {
-                    	contSalto = 0;
-                    	//System.out.println(contSalto + " toco suelo");
+                    if (comando.equals("QUIETO;")) {
+                        jugador.cuerpo.setLinearVelocity(0, jugador.cuerpo.getLinearVelocity().y); // Detiene el movimiento
                     }
                 }
             }
@@ -155,11 +147,10 @@ public class PantallaNivel implements Screen {
     
     // ENVIA EL ESTADO DEL JUGADOR AL CLIENTE (POSICION Y ESTADO)
     private void enviarEstadoAClientes() {
-        String estadoJuego = serializarEstadoJuego();
-        hs.enviarEstadoAClientes(estadoJuego);
+        String estadoJuego = serializarEstadoJuego(); // Serializa el estado del juego
+        hs.enviarEstadoAClientes(estadoJuego); // Envía el estado a los clientes
     }
-    
-    
+
     // CONSTRUYE UN STRING DONDE SE SERIALIZA LAS ACTUALIZACIONES DEL JUGADOR SEPARANDO POR : LOS DATOS Y ; LOS JUGADORES
     private String serializarEstadoJuego() {
         StringBuilder sb = new StringBuilder(); // Crea un StringBuilder para construir la cadena
@@ -168,7 +159,7 @@ public class PantallaNivel implements Screen {
             Marciano jugador = entry.getValue(); // Obtiene el objeto jugador (valor)
             sb.append(clienteId).append(":") // Añade el ID del cliente
               .append(jugador.getTipoMarciano()).append(":") // Añade el tipo de marciano
-              .append(jugador.getCuerpo().getPosition().x).append(",") // Añade la posición X
+              .append(jugador.getCuerpo().getPosition().x). append(",") // Añade la posición X
               .append(jugador.getCuerpo().getPosition().y).append(":") // Añade la posición Y
               .append(jugador.getEstado()).append(";"); // Añade el estado del jugador
         }
@@ -178,67 +169,57 @@ public class PantallaNivel implements Screen {
     
     // GETTERS
     public World getMundo() {
-        return mundo;
+        return mundo; // Devuelve el mundo de Box2D
     }
 
     public MundoBox2D getMundoBox2D() {
-        return mundoBox2D;
+        return mundoBox2D; // Devuelve el mundo Box2D
     }
 
     public TiledMap getMapa() {
-        return mapa;
+        return mapa; // Devuelve el mapa del juego
     }
 
     public void removerJugador(int clienteId) {
-        Marciano jugador = jugadores.remove(clienteId);
+        Marciano jugador = jugadores.remove(clienteId); // Remueve al jugador del mapa
         if (jugador != null) {
-            mundo.destroyBody(jugador.getCuerpo());
+            mundo.destroyBody(jugador.getCuerpo()); // Destruye el cuerpo del jugador en el mundo
         }
     }
-
+    
     public void dispose() {
-        hs.detener();
-        mundo.dispose();
-        //mapa.dispose();
+        hs.detener(); // Detiene el hilo del servidor
+        mundo.dispose(); // Libera los recursos del mundo
+        mapa.dispose(); // Liberar el mapa
         for (Marciano jugador : jugadores.values()) {
-            mundo.destroyBody(jugador.getCuerpo());
+            mundo.destroyBody(jugador.getCuerpo()); // Destruye los cuerpos de los jugadores
         }
-        jugadores.clear();
+        jugadores.clear(); // Limpia la lista de jugadores
     }
 
     @Override
     public void show() {
-        // Método para mostrar la pantalla
     }
 
     @Override
     public void render(float delta) {
-        // Método para renderizar la pantalla
     	update(delta);
     }
 
     @Override
     public void resize(int width, int height) {
-        // Método para manejar el cambio de tamaño de la pantalla
     }
 
     @Override
     public void pause() {
-        // Método para pausar la pantalla
     }
 
     @Override
     public void resume() {
-        // Método para reanudar la pantalla
     }
 
     @Override
     public void hide() {
-        // Método para ocultar la pantalla
     }
-
-	/*public static HiloServidor getHs() {
-		return hs;
-	}*/
 
 }
