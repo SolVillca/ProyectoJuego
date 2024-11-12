@@ -162,11 +162,9 @@ public class PantallaNivel implements Screen {
         	
 	        if (teclas.isArriba() && Gdx.input.isKeyJustPressed(Input.Keys.UP)) input.append("ARRIBA");
 	        if (teclas.isDerecha()) {
-	            //((Marciano) sprite).setDireccion(false);
 	            input.append("DERECHA");
 	        }
 	        if (teclas.isIzquierda()) {
-	            //((Marciano) sprite).setDireccion(true);
 	            input.append("IZQUIERDA");
 	        }
 	        

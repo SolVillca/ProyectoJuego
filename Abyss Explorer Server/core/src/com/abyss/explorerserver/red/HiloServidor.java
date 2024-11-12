@@ -83,7 +83,7 @@ public class HiloServidor extends Thread {
 				if (msj.startsWith("INPUT:")) {
 					// comandosClientes.put(nroCliente, msj);
 					String[] jugadoresMovimiento = msj.split(";");
-					System.out.println(jugadoresMovimiento);
+					//System.out.println(jugadoresMovimiento);
 			        for (String jugadorInfo : jugadoresMovimiento) {
 			        	String[] partes = msj.split(":");
 						if (partes.length == 3) {
@@ -132,7 +132,8 @@ public class HiloServidor extends Thread {
 	}
 
 	public String obtenerComandoCliente(int clienteId) {
-		// System.out.println("comando " + comandosClientes);
+		 System.out.println("comando " + comandosClientes);
+		
 		return comandosClientes.remove(clienteId);
 	}
 

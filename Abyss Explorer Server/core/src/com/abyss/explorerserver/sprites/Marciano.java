@@ -51,7 +51,8 @@ public class Marciano {
         forma.setAsBox(10 / Config.PPM, 13 / Config.PPM);  // Establece las dimensiones del cuerpo
         fd.filter.categoryBits = AbyssExplorerServer.MARCIANO_BIT; // Categoría del marciano
         fd.filter.maskBits = AbyssExplorerServer.DEFAULT_BIT | AbyssExplorerServer.TRAMPOLIN_BIT | AbyssExplorerServer.PINCHES_BIT | AbyssExplorerServer.ENEMIGO_BIT | AbyssExplorerServer.CHECKPOINT_BIT | AbyssExplorerServer.CHECKPOINT_ACTIVADO_BIT | AbyssExplorerServer.FIN_BIT; // Elementos con los que puede colisionar
-
+        
+        fd.friction = 0; // Establece una fricciòn 0 (permite que el jugador no se estanque con las paredes)
         fd.shape = forma; // Asigna la forma al fixture
         cuerpo.createFixture(fd).setUserData(this); // Asigna el fixture al cuerpo y establece el usuario de datos
 

@@ -121,6 +121,12 @@ public class PantallaNivel implements Screen {
                         jugador.saltar(); // Hace saltar al jugador
                     }
 
+                    if (comando.equals("ARRIBADERECHA;")) { // Maneja el movimiento a la derecha
+                        //jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
+                    	jugador.moverDerecha();
+                    	jugador.saltar();
+                    }
+
                     if (comando.equals("DERECHA;")) { // Maneja el movimiento a la derecha
                         //jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
                     	jugador.moverDerecha();
@@ -128,6 +134,12 @@ public class PantallaNivel implements Screen {
                     if (comando.equals("IZQUIERDA;")) { // Maneja el movimiento a la izquierda
                         //jugador.cuerpo.setLinearVelocity(-60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
                     	jugador.moverIzquierda();
+                    }
+
+                    if (comando.equals("ARRIBAIZQUIERDA;")) { // Maneja el movimiento a la derecha
+                        //jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
+                    	jugador.moverIzquierda();
+                    	jugador.saltar();
                     }
 
                     // Se aplica una fuerza cuando el marciano está cayendo
