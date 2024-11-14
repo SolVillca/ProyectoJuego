@@ -63,14 +63,6 @@ public class MundoBox2D {
         ObjetoInteractivo crear(MapObject objeto); // Método para crear un objeto interactivo
     }
 
-    // Método para actualizar el estado de un objeto interactivo
-    public void actualizarEstadoObjeto(String nombreObjeto, boolean activo) {
-        ObjetoInteractivo objeto = objetosInteractivos.get(nombreObjeto); // Obtiene el objeto interactivo por su nombre
-        if (objeto != null) {
-            // objeto.setActivo(activo); // Descomentar para activar/desactivar el objeto
-        }
-    }
-
     // Método para liberar los recursos de los objetos interactivos
     public void dispose() {
         for (ObjetoInteractivo objeto : objetosInteractivos.values()) {
