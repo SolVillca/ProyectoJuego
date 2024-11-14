@@ -10,37 +10,44 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.abyss.explorerserver.pantallas.PantallaNivel;
 import com.abyss.explorerserver.utiles.Global;
 
-public class HiloServidor extends Thread {
-	private DatagramSocket conexion;
-	private boolean fin = false;
+public class HiloServidor extends Thread { // Clase que extiende Thread para crear un hilo de servidor
+	private DatagramSocket conexion; // Socket para la conexión UDP
+	private boolean fin = false; // Bandera para indicar si el hilo debe finalizar
 	
-	private int limiteClientes = 2;
+	private int limiteClientes = 2; // Límite máximo de clientes permitidos
 	
-	private DireccionRed[] clientes = new DireccionRed[limiteClientes];
-	private int cantClientes = 0;
-	private PantallaNivel app;
-	private ConcurrentHashMap<Integer, String> comandosClientes = new ConcurrentHashMap<>();
-
-	public HiloServidor(PantallaNivel pantallaNivel) {
-		this.app = pantallaNivel;
+	private DireccionRed[] clientes = new DireccionRed[limiteClientes]; // Arreglo para almacenar las direcciones de los clientes
+	private int cantClientes = 0; // Contador de clientes conectados
+	private PantallaNivel app; // Referencia a la interfaz de usuario
+	
+	
+	//Mapa Concurrente (Def) : Colección que asocia claves con valores y permite que múltiples hilos lean y escriban en el mapa simultáneamente de forma segura.
+	private ConcurrentHashMap<Integer, String> comandosClientes = new ConcurrentHashMap<>(); // Mapa concurrente para almacenar los comandos de los clientes
+	
+	// Constructor que recibe la interfaz de usuario
+	public HiloServidor(PantallaNivel pantallaNivel) { 
+		this.app = pantallaNivel; // Inicializa la referencia a la interfaz de usuario
 		try {
-			conexion = new DatagramSocket(9998);
+			conexion = new DatagramSocket(9998); // Crea un socket UDP en el puerto 9998
 		} catch (SocketException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // Manejo de excepciones si falla la creación del socket
 		}
 	}
-
-	public void enviarMsj(String msj, InetAddress ip, int puerto) {
-		byte[] data = msj.getBytes();
-		// System.out.println("enviar msj server: " + msj);
-		DatagramPacket dp = new DatagramPacket(data, data.length, ip, puerto);
+	
+	// Método para enviar un mensaje a un cliente
+	public void enviarMsj(String msj, InetAddress ip, int puerto) { 
+		byte[] data = msj.getBytes(); // Convierte el mensaje a un arreglo de bytes
+		// System.out.println("enviar msj server: " + msj); // (Comentario) Imprime el mensaje que se va a enviar
+		DatagramPacket dp = new DatagramPacket(data, data.length, ip, puerto); // Crea un paquete UDP con el mensaje, dirección IP y puerto
 		try {
-			conexion.send(dp);
+			conexion.send(dp); // Envía el paquete a través del socket
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // Manejo de excepciones al enviar datos
 		}
 	}
-
+	
+	
+	// Método que se ejecuta al iniciar el hilo
 	@Override
 	public void run() {
         do {
@@ -54,7 +61,7 @@ public class HiloServidor extends Thread {
             } catch (SocketException e) {
                 // El socket se cerró, salimos del bucle
                 if (fin) {
-                    break; // Salimos si el cierre fue intencional
+                    break; // Sale si el cierre fue intencional
                 }
                 e.printStackTrace(); // Manejo de excepciones al recibir datos
             } catch (IOException e) {
@@ -69,119 +76,100 @@ public class HiloServidor extends Thread {
     }
 
 
-	private void procesarMsj(DatagramPacket dp) {
-		String msj = new String(dp.getData()).trim();
-		int nroCliente = obtenerNroCliente(dp);
-		if (cantClientes < limiteClientes) {
-			if (msj.equals("Conexion")) {
-				System.out.println("Llega msj Conexion cliente " + cantClientes);
-				manejarConexionCliente(dp);
+	private void procesarMsj(DatagramPacket dp) { // Método para procesar el mensaje recibido
+		String msj = new String(dp.getData()).trim(); // Convierte los datos del paquete a una cadena y elimina espacios en blanco
+		int nroCliente = obtenerNroCliente(dp); // Obtiene el número del cliente basado en la dirección y puerto
+		if (cantClientes < limiteClientes) { // Verifica si se puede aceptar más clientes
+			if (msj.equals("Conexion")) { // Si el mensaje es "Conexion"
+				System.out.println("Llega msj Conexion cliente " + cantClientes); // Imprime que llegó un mensaje de conexión de un cliente
+				manejarConexionCliente(dp); // Llama al método para manejar la conexión del cliente
 			}
-		} else {
-			if (nroCliente != -1) {
-				//comandosClientes.put(nroCliente, msj);
-				if (msj.startsWith("INPUT:")) {
-					// comandosClientes.put(nroCliente, msj);
-					String[] jugadoresMovimiento = msj.split(";");
-					//System.out.println(jugadoresMovimiento);
-			        for (String jugadorInfo : jugadoresMovimiento) {
-			        	String[] partes = msj.split(":");
-						if (partes.length == 3) {
-							int clienteId = Integer.parseInt(partes[1]);
-							String movimiento = partes[2];
+		} else { // Si ya se alcanzó el límite de clientes
+			if (nroCliente != -1) { // Verifica si el cliente es válido
+				// comandosClientes.put(nroCliente, msj); // (Comentario) Almacena el mensaje en el mapa de comandos
+				if (msj.startsWith("INPUT:")) { // Si el mensaje comienza con "INPUT:"
+					// comandosClientes.put(nroCliente, msj); // (Comentario) Almacena el mensaje en el mapa de comandos
+					String[] jugadoresMovimiento = msj.split(";"); // Divide el mensaje en partes por el delimitador ";"
+					// System.out.println(jugadoresMovimiento); // (Comentario) Imprime los movimientos de los jugadores
+			        for (String jugadorInfo : jugadoresMovimiento) { // Itera sobre cada información de jugador
+			        	String[] partes = msj.split(":"); // Divide el mensaje por el delimitador ":"
+						if (partes.length == 3) { // Verifica que haya tres partes
+							int clienteId = Integer.parseInt(partes[1]); // Obtiene el ID del cliente
+							String movimiento = partes[2]; // Obtiene el movimiento del cliente
 							// Almacenar el movimiento en el mapa de comandos
-							comandosClientes.put(nroCliente, movimiento);
+							comandosClientes.put(nroCliente, movimiento); // Almacena el movimiento en el mapa de comandos
 						}
 			        }
-
 				}
 			}
 		}
 	}
 
-	private int obtenerNroCliente(DatagramPacket dp) {
-		for (int i = 0; i < clientes.length; i++) {
-			if (clientes[i] != null && dp.getPort() == clientes[i].getPuerto()&& dp.getAddress().equals(clientes[i].getIp())) {
-				return i;
+
+	private int obtenerNroCliente(DatagramPacket dp) { // Método para obtener el número del cliente basado en el paquete recibido
+		for (int i = 0; i < clientes.length; i++) { // Itera sobre el arreglo de clientes
+			if (clientes[i] != null && dp.getPort() == clientes[i].getPuerto() && dp.getAddress().equals(clientes[i].getIp())) { // Verifica si el cliente coincide
+				return i; // Retorna el índice del cliente
 			}
 		}
-		return -1;
+		return -1; // Retorna -1 si no se encuentra el cliente
 	}
 
-	private void manejarConexionCliente(DatagramPacket dp) {
-		System.out.println("manejarConexionClientes " + cantClientes);
-		if (cantClientes < limiteClientes) {
-			System.out.println(" cant " + cantClientes );
-			clientes[cantClientes] = new DireccionRed(dp.getAddress(), dp.getPort());
-			System.out.println("OK:" + cantClientes + " " + clientes[cantClientes].getIp() +" " + clientes[cantClientes].getPuerto());
-			enviarMsj("OK:" + cantClientes, clientes[cantClientes].getIp(), clientes[cantClientes].getPuerto());
-			app.crearJugador(cantClientes);
-			cantClientes++;
+	private void manejarConexionCliente(DatagramPacket dp) { // Método para manejar la conexión de un nuevo cliente
+		System.out.println("manejarConexionClientes " + cantClientes); // Mensaje de depuracion
+		
+		if (cantClientes < limiteClientes) { // Verifica si se puede aceptar más clientes
+			clientes[cantClientes] = new DireccionRed(dp.getAddress(), dp.getPort()); // Almacena la dirección del nuevo cliente
+			System.out.println("OK:" + cantClientes + " " + clientes[cantClientes].getIp() + " " + clientes[cantClientes].getPuerto()); // Mensaje de depuracion
+			enviarMsj("OK:" + cantClientes, clientes[cantClientes].getIp(), clientes[cantClientes].getPuerto()); // Envía un mensaje de confirmación al cliente
+			app.crearJugador(cantClientes); // Llama al método para crear un jugador en la interfaz
+			cantClientes++; // Incrementa el contador de clientes
 
-			if (cantClientes == limiteClientes) {
-				//Global.inicioJuego = true;
-				//System.out.println(Global.inicioJuego + "  entro");
-				for (DireccionRed cliente : clientes) {
-					if (cliente != null) {
-						System.out.println("Empieza " + cliente.getIp() + " "  + cliente.getPuerto());
-						enviarMsj("Empieza", cliente.getIp(), cliente.getPuerto());
+			if (cantClientes == limiteClientes) { // Si se alcanzó el límite de clientes
+				
+				for (DireccionRed cliente : clientes) { // Itera sobre el arreglo de clientes
+					if (cliente != null) { // Verifica que el cliente no sea nulo
+						System.out.println("Empieza " + cliente.getIp() + " " + cliente.getPuerto()); // Mensaje de depuracion
+						
+						enviarMsj("Empieza", cliente.getIp(), cliente.getPuerto()); // Envía un mensaje a los clientes para iniciar el juego
 					}
 				}
 			}
 		}
 	}
 
-	public String obtenerComandoCliente(int clienteId) {
-		 System.out.println("comando " + comandosClientes);
-		
-		return comandosClientes.remove(clienteId);
+	public String obtenerComandoCliente(int clienteId) { // Método para obtener el comando de un cliente específico
+		 System.out.println("comando " + comandosClientes); // Imprime los comandos actuales de los clientes
+		return comandosClientes.remove(clienteId); // Elimina y retorna el comando del cliente
 	}
 
-	public void enviarEstadoAClientes(String estadoJuego) {
-		for (DireccionRed cliente : clientes) {
-			// System.out.println("enviarEstadoAClientes hs :" + cliente + " " + clientes );
-			if (cliente != null) {
-				// System.out.println("hs " + estadoJuego);
-				enviarMsj("Estado:" + estadoJuego, cliente.getIp(), cliente.getPuerto());
+	public void enviarEstadoAClientes(String estadoJuego) { // Método para enviar el estado del juego a todos los clientes
+		for (DireccionRed cliente : clientes) { // Itera sobre el arreglo de clientes
+			if (cliente != null) { // Verifica que el cliente no sea nulo
+				enviarMsj("Estado:" + estadoJuego, cliente.getIp(), cliente.getPuerto()); // Envía el estado del juego al cliente
 			}
 		}
 	} 
 
-	public void notificarFinJuego() {
-		for (DireccionRed cliente : clientes) {
-			if (cliente != null) {
-				enviarMsj("FinJuego", cliente.getIp(), cliente.getPuerto());
-				//System.out.println("envio msj finJuego");
-				
+	// Método para notificar a todos los clientes que el juego ha terminado
+	public void notificarFinJuego() { 
+		for (DireccionRed cliente : clientes) { // Itera sobre el arreglo de clientes
+			if (cliente != null) { // Verifica que el cliente no sea nulo
+				enviarMsj("FinJuego", cliente.getIp(), cliente.getPuerto()); // Envía un mensaje de fin de juego al cliente
 			}
 		}
 	}
 	
-	public void notificarGanador() {
-		for (DireccionRed cliente : clientes) {
-			if (cliente != null) {
-				enviarMsj("LlaveRecogida:" + Global.ganador, cliente.getIp(), cliente.getPuerto());
-				//System.out.println("envio msj finJuego");
+	// Método para notificar a todos los clientes quién es el ganador
+	public void notificarGanador() { 
+		for (DireccionRed cliente : clientes) { // Itera sobre el arreglo de clientes
+			if (cliente != null) { // Verifica que el cliente no sea nulo
+				enviarMsj("LlaveRecogida:" + Global.ganador, cliente.getIp(), cliente.getPuerto()); // Envía un mensaje con el ganador al cliente
 			}
 		}
 	}
-	
 
-	public void removerCliente(int clienteId) {
-		if (clienteId >= 0 && clienteId < clientes.length) {
-			System.out.println("Removio cliente");
-			clientes[clienteId] = null;
-			cantClientes--;
-			app.removerJugador(clienteId);
-			comandosClientes.remove(clienteId);
-			System.out.println(clienteId + " " + clientes[clienteId] + " " + cantClientes + " " + clientes);
-		}
-	}
-
-	public void detener() {
-		fin = true;
-		//if (conexion != null && !conexion.isClosed()) {
-			//conexion.close();
-		//}
+	public void detener() { // Método para detener el hilo
+		fin = true; // Establece la bandera de fin a verdadero
 	}
 }

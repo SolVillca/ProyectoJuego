@@ -38,7 +38,7 @@ public class PantallaMenu implements Screen{
 		
 		titulo = new Texto(Recursos.FUENTEMENU, 80, Color.valueOf("#D2704A") ,false);
 		titulo.setTexto(Config.NOMBRE);
-		titulo.setPosition( (Config.ANCHO - titulo.getAncho() ) / 2f , 600); //(Config.ALTO- t.getAlto())/2)
+		titulo.setPosition( (Config.ANCHO - titulo.getAncho() ) / 2f , 600);
 		
 		opciones = new Texto[textos.length];
 		
@@ -46,7 +46,6 @@ public class PantallaMenu implements Screen{
         acciones.add(() -> {
             // Acción para la opción "Jugar"
             Render.app.setScreen(new PantallaNivel());
-//            Render.app.setScreen(new PantallaJugador());
             
         });
         acciones.add(() -> {
@@ -66,7 +65,7 @@ public class PantallaMenu implements Screen{
 
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
+		
 		b.begin();
 			fondo.dibujar();
 			titulo.dibujar();
@@ -80,31 +79,31 @@ public class PantallaMenu implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		
 		this.dispose();
 		titulo.dispose();
 		fondo.dispose();

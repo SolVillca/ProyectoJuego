@@ -36,7 +36,6 @@ public class PantallaNivel implements Screen {
     private OrthogonalTiledMapRenderer renderMapa; // Renderizador del mapa
 
     
-    
     //ARRAY QUE ALMACENA TODOS LOS TIPOS DE MARCIANOS DEL ATLAS MARCIANOS
     private String[] tiposMarciano = {
         Recursos.SPRITE_MARCIANO_PINK,
@@ -46,7 +45,7 @@ public class PantallaNivel implements Screen {
         Recursos.SPRITE_MARCIANO_NUDE
     };
     
-    private int contadorTipos = 0; // Contador de tipos de marcianos
+    private int contadorTipos = 0; // Contador de tipos de marcianos activos (incrementa cuando uno de los tipos ya esta ocupado)
     
     // Constructor de la clase PantallaNivel
     public PantallaNivel() {
@@ -74,10 +73,10 @@ public class PantallaNivel implements Screen {
         mundoBox2D = new MundoBox2D(this); // Inicializa el mundo Box2D
         mundo.setContactListener(new WorldContactListener()); // Establece el listener de contactos
 
-        System.out.println("Se inicializo el mundo"); // Mensaje de depuración
+        System.out.println("Se inicializo el mundo");
     }
 
- // Método para crear un nuevo jugador
+    // Método para crear un nuevo jugador
     public void crearJugador(int clienteId) {
         String tipoMarciano = tiposMarciano[contadorTipos % tiposMarciano.length]; // Selecciona el tipo de marciano
         Marciano nuevoJugador = new Marciano(this, tipoMarciano, 40, 200, 24, 24, clienteId); // Crea un nuevo marciano
@@ -85,10 +84,9 @@ public class PantallaNivel implements Screen {
         jugadores.put(clienteId, nuevoJugador); // Agrega el jugador al mapa
         contadorTipos++; // Incrementa el contador de tipos
         enviarEstadoAClientes(); // Envía el estado a los clientes
-        // System.out.println("Se creo jugador"); // Mensaje de depuración
     }
 
- // Método para actualizar el estado del nivel
+    // Método para actualizar el estado del nivel
     public void update(float delta) {
         manejoEntrada(); // Maneja la entrada del jugador
         mundo.step(1 / 60f, 6, 2); // Actualiza el mundo Box2D
@@ -101,7 +99,6 @@ public class PantallaNivel implements Screen {
             hs.notificarGanador(); // Notifica al servidor el ganador
             hs.notificarFinJuego(); // Notifica el fin del juego
             Global.inicioJuego = false; // Reinicia el estado de inicio del juego
-            // System.out.println("Juego terminado"); // Mensaje de depuración
         }
 
         enviarEstadoAClientes(); // Envía el estado actualizado a los clientes
@@ -121,23 +118,19 @@ public class PantallaNivel implements Screen {
                         jugador.saltar(); // Hace saltar al jugador
                     }
 
-                    if (comando.equals("ARRIBADERECHA;")) { // Maneja el movimiento a la derecha
-                        //jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
+                    if (comando.equals("ARRIBADERECHA;")) { // Maneja el movimiento a la derecha y arriba
                     	jugador.moverDerecha();
                     	jugador.saltar();
                     }
 
                     if (comando.equals("DERECHA;")) { // Maneja el movimiento a la derecha
-                        //jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
                     	jugador.moverDerecha();
                     }
                     if (comando.equals("IZQUIERDA;")) { // Maneja el movimiento a la izquierda
-                        //jugador.cuerpo.setLinearVelocity(-60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
                     	jugador.moverIzquierda();
                     }
 
-                    if (comando.equals("ARRIBAIZQUIERDA;")) { // Maneja el movimiento a la derecha
-                        //jugador.cuerpo.setLinearVelocity(60f, jugador.cuerpo.getLinearVelocity().y); // Establece la velocidad
+                    if (comando.equals("ARRIBAIZQUIERDA;")) { // Maneja el movimiento a la izquierda y arriba
                     	jugador.moverIzquierda();
                     	jugador.saltar();
                     }
@@ -147,9 +140,9 @@ public class PantallaNivel implements Screen {
                         jugador.cuerpo.applyLinearImpulse(new Vector2(0, -9.8f), jugador.cuerpo.getWorldCenter(), true); // Aplica impulso
                     }
 
-                    // EL PERSONAJE SE DETIENE SI NO HAY TECLAS PRESIONADAS
+                    // El personaje se detiene si no hay teclas presionadas
                     if (comando.equals("QUIETO;")) {
-                        jugador.cuerpo.setLinearVelocity(0, jugador.cuerpo.getLinearVelocity().y); // Detiene el movimiento
+                        jugador.cuerpo.setLinearVelocity(0, jugador.cuerpo.getLinearVelocity().y); // Detiene el movimiento (derecha e izuiqerda)
                     }
                 }
             }
@@ -173,7 +166,7 @@ public class PantallaNivel implements Screen {
               .append(jugador.getTipoMarciano()).append(":") // Añade el tipo de marciano
               .append(jugador.getCuerpo().getPosition().x). append(",") // Añade la posición X
               .append(jugador.getCuerpo().getPosition().y).append(":") // Añade la posición Y
-              .append(jugador.getDireccion()).append(":") // Añade la direccion del jugador
+              .append(jugador.getDireccion()).append(":") // Añade la direccion a la que esta mirando el jugador
               .append(jugador.getEstado()).append(";"); // Añade el estado del jugador
         }
         return sb.toString(); // Devuelve la cadena construida
@@ -192,14 +185,9 @@ public class PantallaNivel implements Screen {
     public TiledMap getMapa() {
         return mapa; // Devuelve el mapa del juego
     }
-
-    public void removerJugador(int clienteId) {
-        Marciano jugador = jugadores.remove(clienteId); // Remueve al jugador del mapa
-        if (jugador != null) {
-            mundo.destroyBody(jugador.getCuerpo()); // Destruye el cuerpo del jugador en el mundo
-        }
-    }
     
+    
+    //METODOS IMPLEMENTADOS DE SCREEN
     public void dispose() {
         hs.detener(); // Detiene el hilo del servidor
         mundo.dispose(); // Libera los recursos del mundo

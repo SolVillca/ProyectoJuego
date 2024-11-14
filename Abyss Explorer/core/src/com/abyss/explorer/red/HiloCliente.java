@@ -25,7 +25,10 @@ public class HiloCliente extends Thread {
     private boolean fin = false;
     // Referencia a la pantalla del juego
     private PantallaNivel app;
+    
+    
     // Cola concurrente para almacenar actualizaciones del estado del juego
+    // Def: Estructura de datos que permite la inserción y eliminación de elementos de manera segura entre múltiples hilos. Mantiene el orden de los elementos según el orden en que fueron añadidos
     private ConcurrentLinkedQueue<String> colaActualizaciones = new ConcurrentLinkedQueue<>();
 
     // Constructor que inicializa el socket y la dirección del servidor

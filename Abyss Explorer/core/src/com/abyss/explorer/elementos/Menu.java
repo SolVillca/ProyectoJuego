@@ -17,17 +17,17 @@ public class Menu {
     private SpriteBatch b;
     private Texto[] opciones;
     private String[] textos;
-    private boolean menuLateral;
+    private boolean menuHorizontal;
     private int opcion, avance;
     private float tiempo = 0;
     private KeyListener entrada;
     private List<Runnable> acciones; // Lista de acciones para cada opción
 
-    public Menu(Texto[] opciones, String[] textos, Boolean menuLateral, int avance, KeyListener entrada, List<Runnable> acciones) {
+    public Menu(Texto[] opciones, String[] textos, Boolean menuHorizontal, int avance, KeyListener entrada, List<Runnable> acciones) {
 
         this.opciones = opciones;
         this.textos = textos;
-        this.menuLateral = menuLateral;
+        this.menuHorizontal = menuHorizontal;
         this.avance = avance;
         this.entrada = entrada;
         this.acciones = acciones;
@@ -38,7 +38,7 @@ public class Menu {
             opciones[i] = new Texto(Recursos.FUENTEMENU, 40, Color.valueOf("#D2704A"), false);
             opciones[i].setTexto(textos[i]);
 
-            if (!menuLateral) {
+            if (!menuHorizontal) {
             	opciones[i].setPosition((Config.ANCHO / 2f) - (opciones[i]. getAncho() / 2f), ((Config.ALTO/ 3.2f) + (opciones[0].getAlto()/ 3.2f)) - ((opciones[i].getAlto()*i) + (avance * i)));        		
             	
             } else {
@@ -58,7 +58,7 @@ public class Menu {
 
         tiempo += delta;
 
-        manejarNavegacion(menuLateral);
+        manejarNavegacion(menuHorizontal);
         actualizarColores();
         manejarSeleccion();
     }

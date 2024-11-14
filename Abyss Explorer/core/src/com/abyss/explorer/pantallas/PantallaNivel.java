@@ -48,7 +48,6 @@ public class PantallaNivel implements Screen {
     // JUGADORES
     private Map<Integer, Sprite> jugadores;
     private Map<Integer, String> tiposJugadores;
-    private int jugadorLocal; // ID del jugador local
     
 
 
@@ -175,30 +174,12 @@ public class PantallaNivel implements Screen {
 	        }
         }
     }
-
-    /*public void actualizarEstadoJuego(String estado) {
-        String[] jugadoresInfo = estado.split(";");
-        for (String jugadorInfo : jugadoresInfo) {
-            String[] partes = jugadorInfo.split(":");
-            if (partes.length >= 4) {
-                int id = Integer.parseInt(partes[0]);
-                String tipo = partes[1];
-                String[] posicion = partes[2].split(",");
-                float x = Float.parseFloat(posicion[0]);
-                float y = Float.parseFloat(posicion[1]);
-                String estadoJugador = partes[3];
-                //System.out.println("actualizarEstadoJuego pc " + estadoJugador);
-                actualizarJugador(id, tipo, x, y, estadoJugador);
-            }
-        }
-    }*/
-
     
     
     public void actualizarJugador(int id, String tipo, float x, float y, boolean haciaDer, String estado) {
         Marciano marciano = (Marciano) jugadores.get(id);
         if (marciano == null || !tipo.equals(tiposJugadores.get(id))) {
-            marciano = new Marciano(atlas, tipo); // Asegúrate de que el tipo sea correcto
+            marciano = new Marciano(atlas, tipo); 
             jugadores.put(id, marciano);
             tiposJugadores.put(id, tipo);
         }
@@ -206,6 +187,11 @@ public class PantallaNivel implements Screen {
         marciano.setDireccion(haciaDer);
         marciano.actualizarEstado(estado); // Actualiza el estado del marciano
     }
+    
+
+	public void setClienteId(int id) {
+	    this.clienteId = id;
+	}
 
     @Override
     public void resize(int width, int height) {
@@ -231,19 +217,6 @@ public class PantallaNivel implements Screen {
         atlas.dispose();
         hc.detener();
     }
-
-//	public World getMundo() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-//	public TiledMap getMapa() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 	
-	public void setClienteId(int id) {
-	    this.clienteId = id;
-	}
 	
 }
